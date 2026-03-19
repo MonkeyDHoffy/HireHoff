@@ -9,16 +9,21 @@ import { create } from 'zustand';
 import {
   Application,
   StatusEvent,
+  Reminder,
   ApplicationStatus,
   generateId,
 } from '../types';
 import {
   getAllApplications,
   getAllHistory,
+  getAllReminders,
   insertApplication,
   updateApplicationInDb,
   deleteApplicationFromDb,
   insertStatusEvent,
+  insertReminder,
+  updateReminderInDb,
+  deleteReminderFromDb,
 } from '../db';
 
 // --- Store Types ---
@@ -28,6 +33,8 @@ interface ApplicationStore {
   applications: Application[];
   /** Status change history for all applications */
   statusHistory: StatusEvent[];
+  /** All reminders */
+  reminders: Reminder[];
   /** Whether the store has loaded data from SQLite */
   hydrated: boolean;
 
@@ -63,6 +70,13 @@ interface ApplicationStore {
 
   /** Get status history for a specific application */
   getHistory: (applicationId: string) => StatusEvent[];
+
+  /** Add a reminder */
+  addReminder: (applicationId: string, dueAt: string, message: string) => Promise<void>;
+  /** Toggle a reminder done/undone */
+  toggleReminder: (id: string) => Promise<void>;
+  /** Delete a reminder */
+  deleteReminder: (id: string) => Promise<void>;
 }
 
 // --- Store ---
@@ -70,14 +84,16 @@ interface ApplicationStore {
 export const useApplicationStore = create<ApplicationStore>((set, get) => ({
   applications: [],
   statusHistory: [],
+  reminders: [],
   hydrated: false,
 
   hydrate: async () => {
-    const [applications, statusHistory] = await Promise.all([
+    const [applications, statusHistory, reminders] = await Promise.all([
       getAllApplications(),
       getAllHistory(),
+      getAllReminders(),
     ]);
-    set({ applications, statusHistory, hydrated: true });
+    set({ applications, statusHistory, reminders, hydrated: true });
   },
 
   addApplication: async (data, initialNote) => {
@@ -170,5 +186,35 @@ export const useApplicationStore = create<ApplicationStore>((set, get) => ({
         (a, b) =>
           new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       );
+  },
+
+  addReminder: async (applicationId, dueAt, message) => {
+    const reminder: Reminder = {
+      id: generateId(),
+      applicationId,
+      dueAt,
+      message,
+      done: false,
+      createdAt: new Date().toISOString(),
+    };
+    await insertReminder(reminder);
+    set((state) => ({ reminders: [...state.reminders, reminder] }));
+  },
+
+  toggleReminder: async (id) => {
+    const reminder = get().reminders.find((r) => r.id === id);
+    if (!reminder) return;
+    const done = !reminder.done;
+    await updateReminderInDb(id, { done });
+    set((state) => ({
+      reminders: state.reminders.map((r) => (r.id === id ? { ...r, done } : r)),
+    }));
+  },
+
+  deleteReminder: async (id) => {
+    await deleteReminderFromDb(id);
+    set((state) => ({
+      reminders: state.reminders.filter((r) => r.id !== id),
+    }));
   },
 }));

@@ -6,7 +6,7 @@
  */
 
 import * as SQLite from 'expo-sqlite';
-import type { Application, StatusEvent, ApplicationStatus, ApplicationSource } from '../types';
+import type { Application, StatusEvent, ApplicationStatus, ApplicationSource, Reminder } from '../types';
 
 let db: SQLite.SQLiteDatabase | null = null;
 
@@ -47,6 +47,16 @@ export async function initDatabase(): Promise<void> {
     CREATE TABLE IF NOT EXISTS settings (
       key TEXT PRIMARY KEY NOT NULL,
       value TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS reminders (
+      id TEXT PRIMARY KEY NOT NULL,
+      applicationId TEXT NOT NULL,
+      dueAt TEXT NOT NULL,
+      message TEXT NOT NULL DEFAULT '',
+      done INTEGER NOT NULL DEFAULT 0,
+      createdAt TEXT NOT NULL,
+      FOREIGN KEY (applicationId) REFERENCES applications(id) ON DELETE CASCADE
     );
   `);
 }
@@ -170,7 +180,45 @@ export async function setSetting(key: string, value: string): Promise<void> {
     [key, value]
   );
 }
+// ─── Reminders ──────────────────────────────────────────────────
 
+export async function getAllReminders(): Promise<Reminder[]> {
+  const rows = await getDb().getAllAsync<Record<string, unknown>>(
+    'SELECT * FROM reminders ORDER BY dueAt ASC'
+  );
+  return rows.map(rowToReminder);
+}
+
+export async function getRemindersForApplication(applicationId: string): Promise<Reminder[]> {
+  const rows = await getDb().getAllAsync<Record<string, unknown>>(
+    'SELECT * FROM reminders WHERE applicationId = ? ORDER BY dueAt ASC',
+    [applicationId]
+  );
+  return rows.map(rowToReminder);
+}
+
+export async function insertReminder(reminder: Reminder): Promise<void> {
+  await getDb().runAsync(
+    `INSERT INTO reminders (id, applicationId, dueAt, message, done, createdAt)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [reminder.id, reminder.applicationId, reminder.dueAt, reminder.message, reminder.done ? 1 : 0, reminder.createdAt]
+  );
+}
+
+export async function updateReminderInDb(id: string, data: Partial<Omit<Reminder, 'id' | 'createdAt'>>): Promise<void> {
+  const fields: string[] = [];
+  const values: unknown[] = [];
+  if (data.done !== undefined) { fields.push('done = ?'); values.push(data.done ? 1 : 0); }
+  if (data.message !== undefined) { fields.push('message = ?'); values.push(data.message); }
+  if (data.dueAt !== undefined) { fields.push('dueAt = ?'); values.push(data.dueAt); }
+  if (fields.length === 0) return;
+  values.push(id);
+  await getDb().runAsync(`UPDATE reminders SET ${fields.join(', ')} WHERE id = ?`, values);
+}
+
+export async function deleteReminderFromDb(id: string): Promise<void> {
+  await getDb().runAsync('DELETE FROM reminders WHERE id = ?', [id]);
+}
 // ─── Row Mappers ─────────────────────────────────────────────
 
 function rowToApplication(row: Record<string, unknown>): Application {
@@ -199,6 +247,17 @@ function rowToStatusEvent(row: Record<string, unknown>): StatusEvent {
     fromStatus: (row.fromStatus as ApplicationStatus) ?? null,
     toStatus: row.toStatus as ApplicationStatus,
     note: (row.note as string) ?? '',
+    createdAt: row.createdAt as string,
+  };
+}
+
+function rowToReminder(row: Record<string, unknown>): Reminder {
+  return {
+    id: row.id as string,
+    applicationId: row.applicationId as string,
+    dueAt: row.dueAt as string,
+    message: (row.message as string) ?? '',
+    done: Boolean(row.done),
     createdAt: row.createdAt as string,
   };
 }

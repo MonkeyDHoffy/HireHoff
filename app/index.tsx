@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { colors } from '../src/theme/colors';
@@ -26,8 +26,16 @@ export default function DashboardScreen() {
   const router = useRouter();
   const applications = useApplicationStore((s) => s.applications);
   const changeStatus = useApplicationStore((s) => s.changeStatus);
+  const allReminders = useApplicationStore((s) => s.reminders);
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
+
+  const dueReminders = useMemo(() => {
+    const now = new Date();
+    return allReminders
+      .filter((r) => !r.done && new Date(r.dueAt) <= new Date(now.getTime() + 3 * 86400000))
+      .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime());
+  }, [allReminders]);
 
   const statusOptions = APPLICATION_STATUSES.map((s) => ({
     value: s,
@@ -87,6 +95,35 @@ export default function DashboardScreen() {
             <Text style={styles.statLabel}>{t.dashboard.interviews}</Text>
           </Card>
         </View>
+
+        {/* --- Upcoming Reminders --- */}
+        {dueReminders.length > 0 && (
+          <>
+            <SectionTitle title={t.reminder.upcomingReminders} />
+            {dueReminders.map((rem) => {
+              const dueDate = new Date(rem.dueAt);
+              const now = new Date();
+              const isOverdue = dueDate < now;
+              const isToday = dueDate.toDateString() === now.toDateString();
+              const app = applications.find((a) => a.id === rem.applicationId);
+              return (
+                <Pressable key={rem.id} onPress={() => app && router.push(`/detail?id=${app.id}`)}>
+                  <Card style={styles.reminderCard}>
+                    <Text style={styles.reminderCompany}>{app?.company ?? '—'}</Text>
+                    <Text style={styles.reminderMsg}>{rem.message}</Text>
+                    <Text style={[
+                      styles.reminderDue,
+                      isOverdue && styles.reminderOverdue,
+                      isToday && styles.reminderDueToday,
+                    ]}>
+                      {isOverdue ? t.reminder.overdue : isToday ? t.reminder.dueToday : t.reminder.due}: {dueDate.toLocaleDateString()}
+                    </Text>
+                  </Card>
+                </Pressable>
+              );
+            })}
+          </>
+        )}
 
         {/* --- Recent Applications --- */}
         <SectionTitle title={t.dashboard.recentApplications} />
@@ -252,5 +289,30 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: colors.primary,
     lineHeight: 32,
+  },
+  reminderCard: {
+    marginBottom: spacing.sm,
+  },
+  reminderCompany: {
+    ...typography.label,
+    color: colors.text,
+    marginBottom: 2,
+  },
+  reminderMsg: {
+    ...typography.bodySmall,
+    color: colors.textSecondary,
+  },
+  reminderDue: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  reminderOverdue: {
+    color: colors.error,
+    fontWeight: '700',
+  },
+  reminderDueToday: {
+    color: colors.primary,
+    fontWeight: '700',
   },
 });

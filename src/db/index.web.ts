@@ -6,12 +6,13 @@
  * Same public API as index.ts (native SQLite version).
  */
 
-import type { Application, StatusEvent, ApplicationStatus, ApplicationSource } from '../types';
+import type { Application, StatusEvent, ApplicationStatus, ApplicationSource, Reminder } from '../types';
 
 const STORAGE_KEYS = {
   applications: 'applyhoff_applications',
   statusHistory: 'applyhoff_status_history',
   settings: 'applyhoff_settings',
+  reminders: 'applyhoff_reminders',
 } as const;
 
 // ─── Helpers ─────────────────────────────────────────────────
@@ -115,4 +116,37 @@ export async function setSetting(key: string, value: string): Promise<void> {
   const settings = loadJSON<Record<string, string>>(STORAGE_KEYS.settings, {});
   settings[key] = value;
   saveJSON(STORAGE_KEYS.settings, settings);
+}
+
+// ─── Reminders ──────────────────────────────────────────────────
+
+export async function getAllReminders(): Promise<Reminder[]> {
+  const reminders = loadJSON<Reminder[]>(STORAGE_KEYS.reminders, []);
+  return reminders.sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime());
+}
+
+export async function getRemindersForApplication(applicationId: string): Promise<Reminder[]> {
+  const reminders = loadJSON<Reminder[]>(STORAGE_KEYS.reminders, []);
+  return reminders
+    .filter((r) => r.applicationId === applicationId)
+    .sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime());
+}
+
+export async function insertReminder(reminder: Reminder): Promise<void> {
+  const reminders = loadJSON<Reminder[]>(STORAGE_KEYS.reminders, []);
+  reminders.push(reminder);
+  saveJSON(STORAGE_KEYS.reminders, reminders);
+}
+
+export async function updateReminderInDb(id: string, data: Partial<Omit<Reminder, 'id' | 'createdAt'>>): Promise<void> {
+  const reminders = loadJSON<Reminder[]>(STORAGE_KEYS.reminders, []);
+  const idx = reminders.findIndex((r) => r.id === id);
+  if (idx === -1) return;
+  reminders[idx] = { ...reminders[idx], ...data };
+  saveJSON(STORAGE_KEYS.reminders, reminders);
+}
+
+export async function deleteReminderFromDb(id: string): Promise<void> {
+  const reminders = loadJSON<Reminder[]>(STORAGE_KEYS.reminders, []);
+  saveJSON(STORAGE_KEYS.reminders, reminders.filter((r) => r.id !== id));
 }

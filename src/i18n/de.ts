@@ -65,6 +65,20 @@ export const de: Translations = {
     duplicate: 'Duplizieren',
   },
 
+  // --- Reminders ---
+  reminder: {
+    title: 'Erinnerungen',
+    addReminder: 'Erinnerung hinzufügen',
+    messagePlaceholder: 'z.B. Nachfassen falls keine Antwort',
+    dateLabel: 'Fälligkeitsdatum',
+    noReminders: 'Keine Erinnerungen gesetzt.',
+    due: 'Fällig',
+    overdue: 'Überfällig',
+    done: 'Erledigt',
+    dueToday: 'Heute fällig',
+    upcomingReminders: 'Anstehende Erinnerungen',
+  },
+
   // --- New Application Form ---
   form: {
     title: 'Neue Bewerbung',
@@ -191,6 +205,9 @@ export const de: Translations = {
     applicationDeleted: 'Bewerbung gelöscht',
     statusChanged: 'Status geändert',
     applicationDuplicated: 'Bewerbung dupliziert',
+    reminderAdded: 'Erinnerung gesetzt',
+    reminderDeleted: 'Erinnerung entfernt',
+    reminderToggled: 'Erinnerung aktualisiert',
   },
 
   // --- Footer ---

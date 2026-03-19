@@ -63,6 +63,20 @@ export const en = {
     duplicate: 'Duplicate',
   },
 
+  // --- Reminders ---
+  reminder: {
+    title: 'Reminders',
+    addReminder: 'Add Reminder',
+    messagePlaceholder: 'e.g. Follow up if no reply',
+    dateLabel: 'Due Date',
+    noReminders: 'No reminders set.',
+    due: 'Due',
+    overdue: 'Overdue',
+    done: 'Done',
+    dueToday: 'Due Today',
+    upcomingReminders: 'Upcoming Reminders',
+  },
+
   // --- New Application Form ---
   form: {
     title: 'New Application',
@@ -189,6 +203,9 @@ export const en = {
     applicationDeleted: 'Application deleted',
     statusChanged: 'Status changed',
     applicationDuplicated: 'Application duplicated',
+    reminderAdded: 'Reminder set',
+    reminderDeleted: 'Reminder removed',
+    reminderToggled: 'Reminder updated',
   },
 
   // --- Footer ---

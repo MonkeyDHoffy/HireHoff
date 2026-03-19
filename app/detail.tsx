@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -19,6 +19,7 @@ import { StatusPill } from '../src/components/StatusPill';
 import { SectionTitle } from '../src/components/SectionTitle';
 import { Button } from '../src/components/Button';
 import { Select } from '../src/components/Select';
+import { Input } from '../src/components/Input';
 import { Footer } from '../src/components/Footer';
 import { useApplicationStore } from '../src/store';
 import {
@@ -39,6 +40,7 @@ export default function DetailScreen() {
 
   const applications = useApplicationStore((s) => s.applications);
   const statusHistory = useApplicationStore((s) => s.statusHistory);
+  const allReminders = useApplicationStore((s) => s.reminders);
   const changeStatus = useApplicationStore((s) => s.changeStatus);
 
   const app = useMemo(() => applications.find((a) => a.id === id), [applications, id]);
@@ -49,9 +51,19 @@ export default function DetailScreen() {
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
     [statusHistory, id]
   );
+  const appReminders = useMemo(
+    () => allReminders.filter((r) => r.applicationId === id).sort((a, b) => new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime()),
+    [allReminders, id]
+  );
   const deleteApplication = useApplicationStore((s) => s.deleteApplication);
+  const addReminder = useApplicationStore((s) => s.addReminder);
+  const toggleReminder = useApplicationStore((s) => s.toggleReminder);
+  const deleteReminder = useApplicationStore((s) => s.deleteReminder);
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
+
+  const [reminderMsg, setReminderMsg] = useState('');
+  const [reminderDays, setReminderDays] = useState('14');
 
   if (!app) {
     return (
@@ -176,6 +188,73 @@ export default function DetailScreen() {
             </Card>
           </>
         ) : null}
+
+        {/* --- Reminders --- */}
+        <SectionTitle title={t.reminder.title} />
+        <Card>
+          {appReminders.length === 0 ? (
+            <Text style={styles.emptyHistory}>{t.reminder.noReminders}</Text>
+          ) : (
+            appReminders.map((rem) => {
+              const dueDate = new Date(rem.dueAt);
+              const now = new Date();
+              const isOverdue = !rem.done && dueDate < now;
+              const isToday = !rem.done && dueDate.toDateString() === now.toDateString();
+              return (
+                <View key={rem.id} style={styles.reminderItem}>
+                  <Pressable onPress={async () => { await toggleReminder(rem.id); showToast(t.toast.reminderToggled); }} style={styles.reminderCheck}>
+                    <Text style={{ fontSize: 18 }}>{rem.done ? '☑' : '☐'}</Text>
+                  </Pressable>
+                  <View style={styles.reminderContent}>
+                    <Text style={[styles.reminderMsg, rem.done && styles.reminderDone]}>{rem.message}</Text>
+                    <Text style={[
+                      styles.reminderDate,
+                      isOverdue && styles.reminderOverdue,
+                      isToday && styles.reminderToday,
+                    ]}>
+                      {isOverdue ? `${t.reminder.overdue}: ` : isToday ? `${t.reminder.dueToday}: ` : `${t.reminder.due}: `}
+                      {dueDate.toLocaleDateString()}
+                    </Text>
+                  </View>
+                  <Pressable onPress={async () => { await deleteReminder(rem.id); showToast(t.toast.reminderDeleted); }} hitSlop={8}>
+                    <Text style={styles.reminderDeleteIcon}>×</Text>
+                  </Pressable>
+                </View>
+              );
+            })
+          )}
+          <View style={styles.addReminderRow}>
+            <View style={styles.addReminderInputs}>
+              <Input
+                placeholder={t.reminder.messagePlaceholder}
+                value={reminderMsg}
+                onChangeText={setReminderMsg}
+                style={styles.reminderInput}
+              />
+              <Input
+                placeholder="14"
+                value={reminderDays}
+                onChangeText={setReminderDays}
+                keyboardType="numeric"
+                style={styles.reminderDaysInput}
+              />
+              <Text style={styles.reminderDaysLabel}>{t.reminder.dateLabel}</Text>
+            </View>
+            <Button
+              title={t.reminder.addReminder}
+              size="sm"
+              onPress={async () => {
+                const days = parseInt(reminderDays, 10) || 14;
+                const dueAt = new Date(Date.now() + days * 86400000).toISOString();
+                const msg = reminderMsg.trim() || t.reminder.messagePlaceholder;
+                await addReminder(app.id, dueAt, msg);
+                setReminderMsg('');
+                setReminderDays('14');
+                showToast(t.toast.reminderAdded);
+              }}
+            />
+          </View>
+        </Card>
 
         {/* --- Change Status --- */}
         <SectionTitle title={t.detail.changeStatus} />
@@ -373,5 +452,63 @@ const styles = StyleSheet.create({
   },
   deleteButton: {
     borderColor: colors.error,
+  },
+  reminderItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  reminderCheck: {
+    marginRight: spacing.sm,
+  },
+  reminderContent: {
+    flex: 1,
+  },
+  reminderMsg: {
+    ...typography.body,
+    color: colors.text,
+  },
+  reminderDone: {
+    textDecorationLine: 'line-through',
+    color: colors.textLight,
+  },
+  reminderDate: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginTop: 2,
+  },
+  reminderOverdue: {
+    color: colors.error,
+    fontWeight: '700',
+  },
+  reminderToday: {
+    color: colors.primary,
+    fontWeight: '700',
+  },
+  reminderDeleteIcon: {
+    fontSize: 20,
+    color: colors.error,
+    paddingHorizontal: spacing.sm,
+  },
+  addReminderRow: {
+    marginTop: spacing.sm,
+    gap: spacing.sm,
+  },
+  addReminderInputs: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  reminderInput: {
+    flex: 1,
+  },
+  reminderDaysInput: {
+    width: 50,
+  },
+  reminderDaysLabel: {
+    ...typography.caption,
+    color: colors.textSecondary,
   },
 });
