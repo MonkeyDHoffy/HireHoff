@@ -85,12 +85,12 @@ export async function getApplicationById(id: string): Promise<Application | unde
 
 export async function insertApplication(app: Application): Promise<void> {
   await getDb().runAsync(
-    `INSERT INTO applications (id, company, position, location, remote, url, source, status, salary, contact, notes, appliedAt, createdAt, updatedAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO applications (id, company, position, location, remote, url, source, status, salary, contact, notes, tags, appliedAt, createdAt, updatedAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       app.id, app.company, app.position, app.location,
       app.remote ? 1 : 0, app.url, app.source, app.status,
-      app.salary, app.contact, app.notes,
+      app.salary, app.contact, app.notes, JSON.stringify(app.tags ?? []),
       app.appliedAt, app.createdAt, app.updatedAt,
     ]
   );
@@ -114,6 +114,7 @@ export async function updateApplicationInDb(
     salary: (v) => v,
     contact: (v) => v,
     notes: (v) => v,
+    tags: (v) => JSON.stringify(v),
     appliedAt: (v) => v,
     updatedAt: (v) => v,
   };
@@ -234,6 +235,7 @@ function rowToApplication(row: Record<string, unknown>): Application {
     salary: (row.salary as string) ?? '',
     contact: (row.contact as string) ?? '',
     notes: (row.notes as string) ?? '',
+    tags: JSON.parse((row.tags as string) || '[]') as string[],
     appliedAt: row.appliedAt as string,
     createdAt: row.createdAt as string,
     updatedAt: row.updatedAt as string,

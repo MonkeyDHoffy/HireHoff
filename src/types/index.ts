@@ -86,6 +86,7 @@ export interface Application {
   salary: string;
   contact: string;
   notes: string;
+  tags: string[];            // user-defined labels
   appliedAt: string;       // ISO date string
   createdAt: string;       // ISO date string
   updatedAt: string;       // ISO date string
@@ -141,6 +142,7 @@ export function createEmptyApplication(): Omit<Application, 'id' | 'createdAt' |
     salary: '',
     contact: '',
     notes: '',
+    tags: [],
     appliedAt: new Date().toISOString(),
   };
 }

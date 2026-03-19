@@ -63,7 +63,9 @@ export default function DetailScreen() {
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
   const c = useTheme((s) => s.colors);
+  const [reminderMsg, setReminderMsg] = useState('');
   const [reminderDays, setReminderDays] = useState('14');
+  const [statusNote, setStatusNote] = useState('');
 
   if (!app) {
     return (
@@ -187,6 +189,18 @@ export default function DetailScreen() {
             <Card>
               <Text style={styles.notesText}>{app.notes}</Text>
             </Card>
+          </>
+        ) : null}
+
+        {/* --- Tags --- */}
+        {app.tags && app.tags.length > 0 ? (
+          <>
+            <SectionTitle title={t.form.tagsLabel} />
+            <View style={styles.tagsRow}>
+              {app.tags.map((tag) => (
+                <Badge key={tag} label={tag} variant="primary" />
+              ))}
+            </View>
           </>
         ) : null}
 
@@ -409,6 +423,12 @@ const styles = StyleSheet.create({
     ...typography.body,
     color: colors.text,
     lineHeight: 22,
+  },
+  tagsRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+    marginBottom: spacing.sm,
   },
   emptyHistory: {
     ...typography.bodySmall,

@@ -105,6 +105,8 @@ export const en = {
     sectionNotes: 'Notes',
     notesLabel: 'Notes',
     notesPlaceholder: 'Interview questions, impressions, benefits...',
+    tagsLabel: 'Tags',
+    tagsPlaceholder: 'e.g. frontend, startup, remote (comma-separated)',
     validationCompany: 'Company name is required',
     validationPosition: 'Position is required',
     validationTitle: 'Missing field',

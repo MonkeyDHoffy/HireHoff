@@ -58,6 +58,7 @@ export default function EditApplicationScreen() {
       salary: app.salary,
       contact: app.contact,
       notes: app.notes,
+      tags: app.tags ?? [],
       appliedAt: app.appliedAt,
     };
   });
@@ -212,6 +213,13 @@ export default function EditApplicationScreen() {
             onChangeText={(v) => updateField('notes', v)}
             multiline
             numberOfLines={4}
+          />
+          <Input
+            label={t.form.tagsLabel}
+            placeholder={t.form.tagsPlaceholder}
+            value={(form.tags ?? []).join(', ')}
+            onChangeText={(v) => updateField('tags', v.split(',').map((t) => t.trim()).filter(Boolean))}
+            style={{ marginTop: spacing.sm }}
           />
         </Card>
 

@@ -107,6 +107,8 @@ export const de: Translations = {
     sectionNotes: 'Notizen',
     notesLabel: 'Notizen',
     notesPlaceholder: 'Interviewfragen, Eindrücke, Benefits...',
+    tagsLabel: 'Tags',
+    tagsPlaceholder: 'z.B. frontend, startup, remote (kommagetrennt)',
     validationCompany: 'Unternehmensname ist erforderlich',
     validationPosition: 'Position ist erforderlich',
     validationTitle: 'Fehlende Angabe',

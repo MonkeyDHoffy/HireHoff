@@ -12,6 +12,7 @@ const CSV_HEADERS = [
   'URL',
   'Applied At',
   'Notes',
+  'Tags',
 ];
 
 function escapeField(value: string): string {
@@ -35,6 +36,7 @@ export function applicationsToCsv(applications: Application[]): string {
       app.url,
       app.appliedAt,
       app.notes,
+      (app.tags ?? []).join('; '),
     ]
       .map(escapeField)
       .join(','),
