@@ -131,9 +131,21 @@ export default function DashboardScreen() {
                     <Select
                       value={app.status}
                       options={statusOptions}
-                      onChange={async (val) => {
-                        await changeStatus(app.id, val as ApplicationStatus);
-                        showToast(t.toast.statusChanged);
+                      onChange={(val) => {
+                        const label = t.status[val as ApplicationStatus];
+                        const msg = t.dashboard.confirmStatusMessage.replace('{status}', label);
+                        const doChange = async () => {
+                          await changeStatus(app.id, val as ApplicationStatus);
+                          showToast(t.toast.statusChanged);
+                        };
+                        if (Platform.OS === 'web') {
+                          if (window.confirm(msg)) doChange();
+                        } else {
+                          Alert.alert(t.dashboard.confirmStatusTitle, msg, [
+                            { text: t.dashboard.confirmCancel, style: 'cancel' },
+                            { text: t.dashboard.confirmOk, onPress: doChange },
+                          ]);
+                        }
                       }}
                     />
                   </View>

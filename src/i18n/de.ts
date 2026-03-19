@@ -30,6 +30,10 @@ export const de: Translations = {
       'Beginne deine Bewerbungen zu tracken, indem du die erste hinzufügst.',
     remote: 'Remote',
     appliedDate: 'Beworben am {date}',
+    confirmStatusTitle: 'Status ändern',
+    confirmStatusMessage: 'Status zu „{status}“ ändern?',
+    confirmCancel: 'Abbrechen',
+    confirmOk: 'Ändern',
   },
 
   // --- Detail Screen ---

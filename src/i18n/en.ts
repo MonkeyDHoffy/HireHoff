@@ -28,6 +28,10 @@ export const en = {
       'Start tracking your job applications by adding your first one.',
     remote: 'Remote',
     appliedDate: 'Applied {date}',
+    confirmStatusTitle: 'Change Status',
+    confirmStatusMessage: 'Change status to "{status}"?',
+    confirmCancel: 'Cancel',
+    confirmOk: 'Change',
   },
 
   // --- Detail Screen ---
