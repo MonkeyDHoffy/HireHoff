@@ -29,6 +29,7 @@ export async function initDatabase(): Promise<void> {
       salary TEXT NOT NULL DEFAULT '',
       contact TEXT NOT NULL DEFAULT '',
       notes TEXT NOT NULL DEFAULT '',
+      tags TEXT NOT NULL DEFAULT '[]',
       appliedAt TEXT NOT NULL,
       createdAt TEXT NOT NULL,
       updatedAt TEXT NOT NULL
@@ -75,6 +76,15 @@ export async function initDatabase(): Promise<void> {
       createdAt TEXT NOT NULL
     );
   `);
+
+  // ─── Migrations (add columns that may not exist yet) ─────────
+  const pragmaResult = await db.getAllAsync<{ name: string }>(
+    "PRAGMA table_info(applications)"
+  );
+  const columns = pragmaResult.map((col) => col.name);
+  if (!columns.includes('tags')) {
+    await db.execAsync("ALTER TABLE applications ADD COLUMN tags TEXT NOT NULL DEFAULT '[]'");
+  }
 }
 
 function getDb(): SQLite.SQLiteDatabase {
