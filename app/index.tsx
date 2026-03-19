@@ -50,6 +50,7 @@ export default function DashboardScreen() {
     { label: t.nav.allApplications, route: '/applications' },
     { label: t.nav.statistics, route: '/statistics' },
     { label: t.kanban.title, route: '/kanban' },
+    { label: t.calendar.title, route: '/calendar' },
     { label: t.nav.settings, route: '/settings' },
   ];
 

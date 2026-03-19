@@ -222,6 +222,13 @@ export const de: Translations = {
     emptyColumn: 'Keine Bewerbungen',
   },
 
+  // --- Calendar ---
+  calendar: {
+    title: 'Kalender',
+    noApplications: 'Keine Bewerbungen in diesem Monat',
+    today: 'Heute',
+  },
+
   // --- Store ---
   store: {
     applicationCreated: 'Bewerbung erstellt',

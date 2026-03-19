@@ -220,6 +220,13 @@ export const en = {
     emptyColumn: 'No applications',
   },
 
+  // --- Calendar ---
+  calendar: {
+    title: 'Calendar',
+    noApplications: 'No applications this month',
+    today: 'Today',
+  },
+
   // --- Store ---
   store: {
     applicationCreated: 'Application created',
