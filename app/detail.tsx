@@ -89,7 +89,8 @@ export default function DetailScreen() {
   }));
 
   const handleStatusChange = async (newStatus: string) => {
-    await changeStatus(app.id, newStatus as ApplicationStatus);
+    await changeStatus(app.id, newStatus as ApplicationStatus, statusNote.trim());
+    setStatusNote('');
     showToast(t.toast.statusChanged);
   };
 
@@ -264,6 +265,12 @@ export default function DetailScreen() {
             value={app.status}
             options={statusOptions}
             onChange={handleStatusChange}
+          />
+          <Input
+            placeholder={t.detail.statusNotePlaceholder}
+            value={statusNote}
+            onChangeText={setStatusNote}
+            style={{ marginTop: spacing.sm }}
           />
         </Card>
 

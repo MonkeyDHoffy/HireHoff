@@ -64,6 +64,7 @@ export const de: Translations = {
     appliedDate: 'Beworben am {date}',
     edit: 'Bearbeiten',
     duplicate: 'Duplizieren',
+    statusNotePlaceholder: 'Notiz zur Statusänderung (optional)',
   },
 
   // --- Reminders ---

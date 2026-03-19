@@ -62,6 +62,7 @@ export const en = {
     appliedDate: 'Applied {date}',
     edit: 'Edit',
     duplicate: 'Duplicate',
+    statusNotePlaceholder: 'Add a note for this status change (optional)',
   },
 
   // --- Reminders ---
