@@ -10,6 +10,7 @@ export const de: Translations = {
     newApplication: 'Neue Bewerbung',
     allApplications: 'Alle Bewerbungen',
     settings: 'Einstellungen',
+    statistics: 'Statistiken',
     back: '← Zurück',
     menu: 'Menü',
     close: 'Schließen',
@@ -191,6 +192,23 @@ export const de: Translations = {
     recruiter: 'Recruiter',
     job_board: 'Jobbörse',
     other: 'Sonstiges',
+  },
+
+  // --- Statistics ---
+  statistics: {
+    title: 'Statistiken',
+    statusBreakdown: 'Status-Übersicht',
+    applicationsByMonth: 'Bewerbungen pro Monat',
+    topSources: 'Top-Quellen',
+    avgResponseTime: 'Durchschn. Antwortzeit',
+    responseTime: 'Antwortzeit',
+    days: 'Tage',
+    noData: 'Noch nicht genug Daten.',
+    successRate: 'Erfolgsquote',
+    activeRate: 'Aktiv-Quote',
+    total: 'Gesamt',
+    active: 'Aktiv',
+    closed: 'Abgeschlossen',
   },
 
   // --- Store ---

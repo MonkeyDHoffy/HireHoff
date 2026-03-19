@@ -8,6 +8,7 @@ export const en = {
     newApplication: 'New Application',
     allApplications: 'All Applications',
     settings: 'Settings',
+    statistics: 'Statistics',
     back: '← Back',
     menu: 'Menu',
     close: 'Close',
@@ -191,6 +192,23 @@ export const en = {
     other: 'Other',
   },
 
+  // --- Statistics ---
+  statistics: {
+    title: 'Statistics',
+    statusBreakdown: 'Status Breakdown',
+    applicationsByMonth: 'Applications by Month',
+    topSources: 'Top Sources',
+    avgResponseTime: 'Avg. Response Time',
+    responseTime: 'Response Time',
+    days: 'days',
+    noData: 'Not enough data yet.',
+    successRate: 'Success Rate',
+    activeRate: 'Active Rate',
+    total: 'Total',
+    active: 'Active',
+    closed: 'Closed',
+  },
+
   // --- Store ---
   store: {
     applicationCreated: 'Application created',
@@ -228,4 +246,9 @@ export const en = {
   },
 } as const;
 
-export type Translations = typeof en;
+/** Deep-writable version: maps all leaf string literals to `string` */
+type DeepStringify<T> = {
+  [K in keyof T]: T[K] extends string ? string : DeepStringify<T[K]>;
+};
+
+export type Translations = DeepStringify<typeof en>;
