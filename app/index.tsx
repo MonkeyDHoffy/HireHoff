@@ -16,6 +16,7 @@ import { Select } from '../src/components/Select';
 import { useApplicationStore } from '../src/store';
 import { STATUS_COLORS, APPLICATION_STATUSES, ApplicationStatus } from '../src/types';
 import { useI18n } from '../src/i18n';
+import { useToast } from '../src/store/toast';
 
 /**
  * Dashboard — main entry screen.
@@ -26,6 +27,7 @@ export default function DashboardScreen() {
   const applications = useApplicationStore((s) => s.applications);
   const changeStatus = useApplicationStore((s) => s.changeStatus);
   const t = useI18n((s) => s.t);
+  const showToast = useToast((s) => s.show);
 
   const statusOptions = APPLICATION_STATUSES.map((s) => ({
     value: s,
@@ -129,7 +131,10 @@ export default function DashboardScreen() {
                     <Select
                       value={app.status}
                       options={statusOptions}
-                      onChange={(val) => changeStatus(app.id, val as ApplicationStatus)}
+                      onChange={async (val) => {
+                        await changeStatus(app.id, val as ApplicationStatus);
+                        showToast(t.toast.statusChanged);
+                      }}
                     />
                   </View>
                 </Card>

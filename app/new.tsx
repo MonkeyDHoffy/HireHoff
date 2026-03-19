@@ -29,6 +29,7 @@ import {
   ApplicationStatus,
 } from '../src/types';
 import { useI18n } from '../src/i18n';
+import { useToast } from '../src/store/toast';
 
 /**
  * New Application form screen.
@@ -38,6 +39,7 @@ export default function NewApplicationScreen() {
   const router = useRouter();
   const addApplication = useApplicationStore((s) => s.addApplication);
   const t = useI18n((s) => s.t);
+  const showToast = useToast((s) => s.show);
 
   const [form, setForm] = useState(createEmptyApplication());
 
@@ -70,6 +72,7 @@ export default function NewApplicationScreen() {
     }
 
     await addApplication(form, t.store.applicationCreated);
+    showToast(t.toast.applicationSaved);
     router.back();
   };
 

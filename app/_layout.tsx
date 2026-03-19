@@ -7,6 +7,7 @@ import { colors } from '../src/theme/colors';
 import { initDatabase } from '../src/db';
 import { useApplicationStore } from '../src/store';
 import { useI18n } from '../src/i18n';
+import { Toast } from '../src/components/Toast';
 
 /**
  * Root layout — wraps the entire app.
@@ -44,6 +45,7 @@ export default function RootLayout() {
           animation: 'slide_from_right',
         }}
       />
+      <Toast />
     </SafeAreaProvider>
   );
 }

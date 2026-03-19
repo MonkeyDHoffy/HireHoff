@@ -177,6 +177,14 @@ export const en = {
     applicationCreated: 'Application created',
   },
 
+  // --- Toasts ---
+  toast: {
+    applicationSaved: 'Application saved',
+    applicationUpdated: 'Application updated',
+    applicationDeleted: 'Application deleted',
+    statusChanged: 'Status changed',
+  },
+
   // --- Footer ---
   footer: {
     brand: 'ApplyHoff',

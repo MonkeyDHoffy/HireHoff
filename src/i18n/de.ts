@@ -179,6 +179,14 @@ export const de: Translations = {
     applicationCreated: 'Bewerbung erstellt',
   },
 
+  // --- Toasts ---
+  toast: {
+    applicationSaved: 'Bewerbung gespeichert',
+    applicationUpdated: 'Bewerbung aktualisiert',
+    applicationDeleted: 'Bewerbung gelöscht',
+    statusChanged: 'Status geändert',
+  },
+
   // --- Footer ---
   footer: {
     brand: 'ApplyHoff',

@@ -27,6 +27,7 @@ import {
   ApplicationStatus,
 } from '../src/types';
 import { useI18n } from '../src/i18n';
+import { useToast } from '../src/store/toast';
 
 /**
  * Application detail screen.
@@ -50,6 +51,7 @@ export default function DetailScreen() {
   );
   const deleteApplication = useApplicationStore((s) => s.deleteApplication);
   const t = useI18n((s) => s.t);
+  const showToast = useToast((s) => s.show);
 
   if (!app) {
     return (
@@ -76,11 +78,13 @@ export default function DetailScreen() {
 
   const handleStatusChange = async (newStatus: string) => {
     await changeStatus(app.id, newStatus as ApplicationStatus);
+    showToast(t.toast.statusChanged);
   };
 
   const handleDelete = () => {
     const doDelete = async () => {
       await deleteApplication(app.id);
+      showToast(t.toast.applicationDeleted);
       router.back();
     };
 

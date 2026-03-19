@@ -18,3 +18,4 @@ export { StatusPill } from './StatusPill';
 export { BurgerMenu } from './BurgerMenu';
 export { Select } from './Select';
 export { Toggle } from './Toggle';
+export { Toast } from './Toast';

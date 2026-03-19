@@ -28,6 +28,7 @@ import {
   ApplicationStatus,
 } from '../src/types';
 import { useI18n } from '../src/i18n';
+import { useToast } from '../src/store/toast';
 
 /**
  * Edit Application form screen.
@@ -40,6 +41,7 @@ export default function EditApplicationScreen() {
   const app = useMemo(() => applications.find((a) => a.id === id), [applications, id]);
   const updateApplication = useApplicationStore((s) => s.updateApplication);
   const t = useI18n((s) => s.t);
+  const showToast = useToast((s) => s.show);
 
   const [form, setForm] = useState(() => {
     if (!app) return null;
@@ -104,6 +106,7 @@ export default function EditApplicationScreen() {
     }
 
     await updateApplication(app.id, form);
+    showToast(t.toast.applicationUpdated);
     router.back();
   };
 
