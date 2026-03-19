@@ -9,6 +9,7 @@ import { Card } from '../src/components/Card';
 import { SectionTitle } from '../src/components/SectionTitle';
 import { Footer } from '../src/components/Footer';
 import { useApplicationStore } from '../src/store';
+import { useTheme } from '../src/store/theme';
 import {
   APPLICATION_STATUSES,
   STATUS_COLORS,
@@ -21,6 +22,7 @@ export default function StatisticsScreen() {
   const router = useRouter();
   const applications = useApplicationStore((s) => s.applications);
   const statusHistory = useApplicationStore((s) => s.statusHistory);
+  const c = useTheme((s) => s.colors);
   const t = useI18n((s) => s.t);
 
   // --- Status breakdown ---
@@ -105,7 +107,7 @@ export default function StatisticsScreen() {
   const activePct = total > 0 ? Math.round((active / total) * 100) : 0;
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: c.background }]}>
       <Header
         title={t.statistics.title}
         left={

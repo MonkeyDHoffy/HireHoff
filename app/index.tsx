@@ -14,6 +14,7 @@ import { BurgerMenu } from '../src/components/BurgerMenu';
 import { StatusPill } from '../src/components/StatusPill';
 import { Select } from '../src/components/Select';
 import { useApplicationStore } from '../src/store';
+import { useTheme } from '../src/store/theme';
 import { STATUS_COLORS, APPLICATION_STATUSES, ApplicationStatus } from '../src/types';
 import { useI18n } from '../src/i18n';
 import { useToast } from '../src/store/toast';
@@ -27,6 +28,7 @@ export default function DashboardScreen() {
   const applications = useApplicationStore((s) => s.applications);
   const changeStatus = useApplicationStore((s) => s.changeStatus);
   const allReminders = useApplicationStore((s) => s.reminders);
+  const c = useTheme((s) => s.colors);
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
 
@@ -64,7 +66,7 @@ export default function DashboardScreen() {
   const recent = applications.slice(0, 5);
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: c.background }]}>
       <Header
         title="ApplyHoff"
         subtitle={t.nav.dashboard}

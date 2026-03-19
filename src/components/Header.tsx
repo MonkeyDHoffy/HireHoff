@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
+import { useTheme } from '../store/theme';
 
 // --- Types ---
 
@@ -30,17 +31,18 @@ export const Header: React.FC<HeaderProps> = ({
   style,
 }) => {
   const insets = useSafeAreaInsets();
+  const c = useTheme((s) => s.colors);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + spacing.sm }, style]}>
+    <View style={[styles.container, { paddingTop: insets.top + spacing.sm, backgroundColor: c.background, borderBottomColor: c.border }, style]}>
       <View style={styles.row}>
         <View style={styles.side}>{left}</View>
         <View style={styles.center}>
-          <Text style={styles.title} numberOfLines={1}>
+          <Text style={[styles.title, { color: c.text }]} numberOfLines={1}>
             {title}
           </Text>
           {subtitle && (
-            <Text style={styles.subtitle} numberOfLines={1}>
+            <Text style={[styles.subtitle, { color: c.textSecondary }]} numberOfLines={1}>
               {subtitle}
             </Text>
           )}

@@ -5,7 +5,7 @@
  * All color values used in the app should reference these tokens.
  */
 
-export const colors = {
+export const lightColors = {
   // --- Backgrounds ---
   background: '#FFF8F0',       // warm cream — main app background
   surface: '#FFF1E6',          // light beige — cards, panels
@@ -42,4 +42,44 @@ export const colors = {
   overlay: 'rgba(61, 44, 30, 0.4)',  // warm dark overlay
 } as const;
 
-export type ColorToken = keyof typeof colors;
+export const darkColors: typeof lightColors = {
+  // --- Backgrounds ---
+  background: '#1A1410',
+  surface: '#2A2018',
+  surfaceAlt: '#3A2E22',
+
+  // --- Primary (orange family) ---
+  primary: '#E8914E',
+  primaryLight: '#F4A261',
+  primaryDark: '#D06A2A',
+
+  // --- Accent ---
+  accent: '#D4956A',
+
+  // --- Text ---
+  text: '#F0E6DA',
+  textSecondary: '#BFA98E',
+  textLight: '#8A7562',
+  textOnPrimary: '#FFFFFF',
+
+  // --- Borders ---
+  border: '#3E3228',
+  borderFocused: '#E8914E',
+
+  // --- Semantic ---
+  success: '#7AB882',
+  warning: '#E6A63C',
+  error: '#D85C5C',
+  info: '#6BA0B8',
+
+  // --- Utility ---
+  white: '#FFFFFF',
+  black: '#1A1A1A',
+  transparent: 'transparent',
+  overlay: 'rgba(0, 0, 0, 0.5)',
+} as const;
+
+/** Default export for backwards compatibility — light theme */
+export const colors = lightColors;
+
+export type ColorToken = keyof typeof lightColors;

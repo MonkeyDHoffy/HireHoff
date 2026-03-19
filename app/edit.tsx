@@ -29,6 +29,7 @@ import {
 } from '../src/types';
 import { useI18n } from '../src/i18n';
 import { useToast } from '../src/store/toast';
+import { useTheme } from '../src/store/theme';
 
 /**
  * Edit Application form screen.
@@ -42,6 +43,7 @@ export default function EditApplicationScreen() {
   const updateApplication = useApplicationStore((s) => s.updateApplication);
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
+  const c = useTheme((s) => s.colors);
 
   const [form, setForm] = useState(() => {
     if (!app) return null;
@@ -62,7 +64,7 @@ export default function EditApplicationScreen() {
 
   if (!app || !form) {
     return (
-      <View style={styles.screen}>
+      <View style={[styles.screen, { backgroundColor: c.background }]}>
         <Header
           title={t.detail.notFoundTitle}
           left={
@@ -119,7 +121,7 @@ export default function EditApplicationScreen() {
   };
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: c.background }]}>
       <Header
         title={t.form.editTitle}
         left={

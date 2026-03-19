@@ -18,6 +18,7 @@ import {
   ApplicationStatus,
 } from '../src/types';
 import { useI18n } from '../src/i18n';
+import { useTheme } from '../src/store/theme';
 
 /**
  * Application list — shows all applications with search and status filter.
@@ -25,6 +26,7 @@ import { useI18n } from '../src/i18n';
 export default function ApplicationListScreen() {
   const router = useRouter();
   const applications = useApplicationStore((s) => s.applications);
+  const c = useTheme((s) => s.colors);
   const t = useI18n((s) => s.t);
 
   const [search, setSearch] = useState('');
@@ -74,7 +76,7 @@ export default function ApplicationListScreen() {
   ];
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: c.background }]}>
       <Header
         title={t.list.title}
         left={

@@ -22,6 +22,7 @@ import { Select } from '../src/components/Select';
 import { Input } from '../src/components/Input';
 import { Footer } from '../src/components/Footer';
 import { useApplicationStore } from '../src/store';
+import { useTheme } from '../src/store/theme';
 import {
   STATUS_COLORS,
   APPLICATION_STATUSES,
@@ -61,13 +62,12 @@ export default function DetailScreen() {
   const deleteReminder = useApplicationStore((s) => s.deleteReminder);
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
-
-  const [reminderMsg, setReminderMsg] = useState('');
+  const c = useTheme((s) => s.colors);
   const [reminderDays, setReminderDays] = useState('14');
 
   if (!app) {
     return (
-      <View style={styles.screen}>
+      <View style={[styles.screen, { backgroundColor: c.background }]}>
         <Header
           title={t.detail.notFoundTitle}
           left={
@@ -124,7 +124,7 @@ export default function DetailScreen() {
   const appliedDate = new Date(app.appliedAt).toLocaleDateString();
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: c.background }]}>
       <Header
         title={app.company}
         subtitle={app.position}

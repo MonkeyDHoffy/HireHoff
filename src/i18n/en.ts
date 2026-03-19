@@ -117,6 +117,8 @@ export const en = {
     description: 'Job application tracker built with Expo + React Native',
     language: 'Language',
     languageLabel: 'Language',
+    theme: 'Theme',
+    themeLabel: 'Appearance',
     componentPreview: 'Component Preview',
     exportCsv: 'Export as CSV',
     exportSuccess: 'CSV exported successfully',

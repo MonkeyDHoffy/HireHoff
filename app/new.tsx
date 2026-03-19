@@ -30,6 +30,7 @@ import {
 } from '../src/types';
 import { useI18n } from '../src/i18n';
 import { useToast } from '../src/store/toast';
+import { useTheme } from '../src/store/theme';
 
 /**
  * New Application form screen.
@@ -42,6 +43,7 @@ export default function NewApplicationScreen() {
   const addApplication = useApplicationStore((s) => s.addApplication);
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
+  const c = useTheme((s) => s.colors);
 
   const templateApp = useMemo(
     () => (duplicate ? applications.find((a) => a.id === duplicate) : undefined),
@@ -109,7 +111,7 @@ export default function NewApplicationScreen() {
   };
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: c.background }]}>
       <Header
         title={t.form.title}
         left={

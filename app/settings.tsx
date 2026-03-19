@@ -13,6 +13,7 @@ import { Select } from '../src/components/Select';
 import { useI18n, type Language } from '../src/i18n';
 import { useApplicationStore } from '../src/store';
 import { useToast } from '../src/store/toast';
+import { useTheme, type ThemeMode } from '../src/store/theme';
 import { applicationsToCsv, downloadCsvWeb } from '../src/utils/csv';
 
 /**
@@ -26,6 +27,14 @@ export default function SettingsScreen() {
   const setLanguage = useI18n((s) => s.setLanguage);
   const applications = useApplicationStore((s) => s.applications);
   const showToast = useToast((s) => s.show);
+  const themeMode = useTheme((s) => s.mode);
+  const setThemeMode = useTheme((s) => s.setMode);
+  const c = useTheme((s) => s.colors);
+
+  const themeOptions = [
+    { value: 'light', label: 'Light' },
+    { value: 'dark', label: 'Dark' },
+  ];
 
   const languageOptions = [
     { value: 'en', label: 'English' },
@@ -33,7 +42,7 @@ export default function SettingsScreen() {
   ];
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: c.background }]}>
       <Header
         title={t.settings.title}
         left={
@@ -65,6 +74,17 @@ export default function SettingsScreen() {
             value={language}
             options={languageOptions}
             onChange={(v) => setLanguage(v as Language)}
+          />
+        </Card>
+
+        {/* --- Theme Toggle --- */}
+        <SectionTitle title={t.settings.theme} />
+        <Card>
+          <Select
+            label={t.settings.themeLabel}
+            value={themeMode}
+            options={themeOptions}
+            onChange={(v) => setThemeMode(v as ThemeMode)}
           />
         </Card>
 

@@ -9,12 +9,14 @@ import { Card } from '../src/components/Card';
 import { StatusPill } from '../src/components/StatusPill';
 import { Footer } from '../src/components/Footer';
 import { useApplicationStore } from '../src/store';
+import { useTheme } from '../src/store/theme';
 import { APPLICATION_STATUSES, STATUS_COLORS, ApplicationStatus } from '../src/types';
 import { useI18n } from '../src/i18n';
 
 export default function KanbanScreen() {
   const router = useRouter();
   const applications = useApplicationStore((s) => s.applications);
+  const c = useTheme((s) => s.colors);
   const t = useI18n((s) => s.t);
 
   const columns = useMemo(() => {
@@ -30,7 +32,7 @@ export default function KanbanScreen() {
   }, [applications, t]);
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, { backgroundColor: c.background }]}>
       <Header
         title={t.kanban.title}
         left={

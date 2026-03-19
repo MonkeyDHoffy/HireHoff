@@ -119,6 +119,8 @@ export const de: Translations = {
     description: 'Bewerbungstracker gebaut mit Expo + React Native',
     language: 'Sprache',
     languageLabel: 'Sprache',
+    theme: 'Design',
+    themeLabel: 'Erscheinungsbild',
     componentPreview: 'Komponentenvorschau',
     exportCsv: 'Als CSV exportieren',
     exportSuccess: 'CSV erfolgreich exportiert',

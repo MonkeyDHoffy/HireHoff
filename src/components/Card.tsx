@@ -4,6 +4,7 @@ import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { radii } from '../theme/radii';
 import { shadows } from '../theme/shadows';
+import { useTheme } from '../store/theme';
 
 // --- Types ---
 
@@ -28,19 +29,23 @@ export const Card: React.FC<CardProps> = ({
   elevation = 'sm',
   noPadding = false,
   accentColor,
-}) => (
-  <View
-    style={[
-      styles.card,
-      shadows[elevation],
-      noPadding && styles.noPadding,
-      accentColor ? { borderLeftWidth: 4, borderLeftColor: accentColor } : undefined,
-      style,
-    ]}
-  >
-    {children}
-  </View>
-);
+}) => {
+  const c = useTheme((s) => s.colors);
+  return (
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: c.surface, borderColor: c.border },
+        shadows[elevation],
+        noPadding && styles.noPadding,
+        accentColor ? { borderLeftWidth: 4, borderLeftColor: accentColor } : undefined,
+        style,
+      ]}
+    >
+      {children}
+    </View>
+  );
+};
 
 // --- Styles ---
 
