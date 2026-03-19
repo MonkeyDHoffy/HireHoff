@@ -57,6 +57,11 @@ export default function DashboardScreen() {
         title="ApplyHoff"
         subtitle={t.nav.dashboard}
         left={<BurgerMenu items={menuItems} />}
+        right={
+          <Pressable onPress={() => router.push('/new')} hitSlop={8}>
+            <Text style={styles.addIcon}>+</Text>
+          </Pressable>
+        }
       />
 
       <ScrollView
@@ -224,5 +229,11 @@ const styles = StyleSheet.create({
   },
   addButton: {
     marginTop: spacing.lg,
+  },
+  addIcon: {
+    fontSize: 28,
+    fontWeight: '600',
+    color: colors.primary,
+    lineHeight: 32,
   },
 });
