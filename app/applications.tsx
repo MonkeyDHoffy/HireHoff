@@ -29,9 +29,15 @@ export default function ApplicationListScreen() {
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<ApplicationStatus | 'all'>('all');
+  const [sortBy, setSortBy] = useState<'date' | 'status' | 'company'>('date');
+
+  const statusOrder = useMemo(
+    () => new Map(APPLICATION_STATUSES.map((s, i) => [s, i])),
+    []
+  );
 
   const filtered = useMemo(() => {
-    let list = applications;
+    let list = [...applications];
 
     if (statusFilter !== 'all') {
       list = list.filter((a) => a.status === statusFilter);
@@ -46,8 +52,21 @@ export default function ApplicationListScreen() {
       );
     }
 
+    switch (sortBy) {
+      case 'status':
+        list.sort((a, b) => (statusOrder.get(a.status) ?? 0) - (statusOrder.get(b.status) ?? 0));
+        break;
+      case 'company':
+        list.sort((a, b) => a.company.localeCompare(b.company));
+        break;
+      case 'date':
+      default:
+        list.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        break;
+    }
+
     return list;
-  }, [applications, search, statusFilter]);
+  }, [applications, search, statusFilter, sortBy, statusOrder]);
 
   const filterOptions: { value: ApplicationStatus | 'all'; label: string }[] = [
     { value: 'all', label: t.list.filterAll },
@@ -101,6 +120,30 @@ export default function ApplicationListScreen() {
           </Pressable>
         ))}
       </ScrollView>
+
+      {/* --- Sort Chips --- */}
+      <View style={styles.sortRow}>
+        <Text style={styles.sortLabel}>{t.list.sortBy}:</Text>
+        {(['date', 'status', 'company'] as const).map((option) => (
+          <Pressable
+            key={option}
+            onPress={() => setSortBy(option)}
+            style={[
+              styles.sortChip,
+              sortBy === option && styles.sortChipActive,
+            ]}
+          >
+            <Text
+              style={[
+                styles.sortChipText,
+                sortBy === option && styles.sortChipTextActive,
+              ]}
+            >
+              {t.list[`sort${option.charAt(0).toUpperCase() + option.slice(1)}` as 'sortDate' | 'sortStatus' | 'sortCompany']}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
 
       <Text style={styles.countText}>
         {t.list.count.replace('{count}', String(filtered.length))}
@@ -203,6 +246,37 @@ const styles = StyleSheet.create({
     color: colors.textSecondary,
   },
   filterChipTextActive: {
+    color: '#FFFFFF',
+  },
+  sortRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+    gap: spacing.xs,
+  },
+  sortLabel: {
+    ...typography.caption,
+    color: colors.textSecondary,
+    marginRight: spacing.xs,
+  },
+  sortChip: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: 16,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  sortChipActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  sortChipText: {
+    ...typography.caption,
+    color: colors.textSecondary,
+  },
+  sortChipTextActive: {
     color: '#FFFFFF',
   },
   countText: {

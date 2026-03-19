@@ -192,5 +192,9 @@ export const de: Translations = {
     noResults: 'Keine passenden Bewerbungen',
     noResultsDescription: 'Passe deine Suche oder Filter an.',
     count: '{count} Bewerbungen',
+    sortBy: 'Sortieren',
+    sortDate: 'Datum',
+    sortStatus: 'Status',
+    sortCompany: 'Firma',
   },
 };

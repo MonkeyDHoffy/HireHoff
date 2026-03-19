@@ -190,6 +190,10 @@ export const en = {
     noResults: 'No matching applications',
     noResultsDescription: 'Try adjusting your search or filter.',
     count: '{count} applications',
+    sortBy: 'Sort',
+    sortDate: 'Date',
+    sortStatus: 'Status',
+    sortCompany: 'Company',
   },
 } as const;
 
