@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
@@ -7,9 +7,13 @@ import { typography } from '../src/theme/typography';
 import { Header } from '../src/components/Header';
 import { Card } from '../src/components/Card';
 import { SectionTitle } from '../src/components/SectionTitle';
+import { Button } from '../src/components/Button';
 import { Footer } from '../src/components/Footer';
 import { Select } from '../src/components/Select';
 import { useI18n, type Language } from '../src/i18n';
+import { useApplicationStore } from '../src/store';
+import { useToast } from '../src/store/toast';
+import { applicationsToCsv, downloadCsvWeb } from '../src/utils/csv';
 
 /**
  * Settings screen.
@@ -20,6 +24,8 @@ export default function SettingsScreen() {
   const t = useI18n((s) => s.t);
   const language = useI18n((s) => s.language);
   const setLanguage = useI18n((s) => s.setLanguage);
+  const applications = useApplicationStore((s) => s.applications);
+  const showToast = useToast((s) => s.show);
 
   const languageOptions = [
     { value: 'en', label: 'English' },
@@ -72,6 +78,27 @@ export default function SettingsScreen() {
             </View>
           </Card>
         </Pressable>
+
+        {/* --- CSV Export --- */}
+        <SectionTitle title={t.settings.exportCsv} />
+        <Card>
+          <Button
+            title={t.settings.exportCsv}
+            variant="outline"
+            onPress={() => {
+              const csv = applicationsToCsv(applications);
+              if (Platform.OS === 'web') {
+                downloadCsvWeb(csv, 'applyhoff-export.csv');
+              } else {
+                // Native: copy to clipboard as fallback
+                import('react-native').then(({ Clipboard }) => {
+                  Clipboard?.setString?.(csv);
+                });
+              }
+              showToast(t.settings.exportSuccess);
+            }}
+          />
+        </Card>
 
         <View style={{ height: spacing.xxl }} />
       </ScrollView>

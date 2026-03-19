@@ -120,6 +120,8 @@ export const de: Translations = {
     language: 'Sprache',
     languageLabel: 'Sprache',
     componentPreview: 'Komponentenvorschau',
+    exportCsv: 'Als CSV exportieren',
+    exportSuccess: 'CSV erfolgreich exportiert',
     buttons: 'Buttons',
     primaryButton: 'Primärer Button',
     secondary: 'Sekundär',

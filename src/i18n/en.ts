@@ -118,6 +118,8 @@ export const en = {
     language: 'Language',
     languageLabel: 'Language',
     componentPreview: 'Component Preview',
+    exportCsv: 'Export as CSV',
+    exportSuccess: 'CSV exported successfully',
     buttons: 'Buttons',
     primaryButton: 'Primary Button',
     secondary: 'Secondary',
