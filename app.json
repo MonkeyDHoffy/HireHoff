@@ -35,6 +35,13 @@
       "expo-router",
       "expo-sqlite",
       "expo-sharing"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c6bd143d-0a5e-437b-b2d0-770b03ed7e9d"
+      }
+    },
+    "owner": "monkeydhoffy"
   }
 }
