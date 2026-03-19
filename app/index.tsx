@@ -108,7 +108,7 @@ export default function DashboardScreen() {
                 key={app.id}
                 onPress={() => router.push(`/detail?id=${app.id}`)}
               >
-                <Card style={styles.appCard}>
+                <Card style={styles.appCard} accentColor={STATUS_COLORS[app.status]}>
                   <View style={styles.appCardHeader}>
                     <Text style={styles.appCompany} numberOfLines={1}>
                       {app.company}

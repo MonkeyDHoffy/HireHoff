@@ -16,6 +16,8 @@ interface CardProps {
   elevation?: 'none' | 'sm' | 'md' | 'lg';
   /** Remove default padding */
   noPadding?: boolean;
+  /** Left border accent color (e.g. status color) */
+  accentColor?: string;
 }
 
 // --- Component ---
@@ -25,12 +27,14 @@ export const Card: React.FC<CardProps> = ({
   style,
   elevation = 'sm',
   noPadding = false,
+  accentColor,
 }) => (
   <View
     style={[
       styles.card,
       shadows[elevation],
       noPadding && styles.noPadding,
+      accentColor ? { borderLeftWidth: 4, borderLeftColor: accentColor } : undefined,
       style,
     ]}
   >
