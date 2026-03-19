@@ -58,6 +58,7 @@ export const de: Translations = {
     noHistory: 'Noch kein Verlauf.',
     appliedDate: 'Beworben am {date}',
     edit: 'Bearbeiten',
+    duplicate: 'Duplizieren',
   },
 
   // --- New Application Form ---
@@ -185,6 +186,7 @@ export const de: Translations = {
     applicationUpdated: 'Bewerbung aktualisiert',
     applicationDeleted: 'Bewerbung gelöscht',
     statusChanged: 'Status geändert',
+    applicationDuplicated: 'Bewerbung dupliziert',
   },
 
   // --- Footer ---

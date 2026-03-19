@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   Alert,
   Platform,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
@@ -37,11 +37,35 @@ import { useToast } from '../src/store/toast';
  */
 export default function NewApplicationScreen() {
   const router = useRouter();
+  const { duplicate } = useLocalSearchParams<{ duplicate?: string }>();
+  const applications = useApplicationStore((s) => s.applications);
   const addApplication = useApplicationStore((s) => s.addApplication);
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
 
-  const [form, setForm] = useState(createEmptyApplication());
+  const templateApp = useMemo(
+    () => (duplicate ? applications.find((a) => a.id === duplicate) : undefined),
+    [duplicate, applications]
+  );
+
+  const [form, setForm] = useState(() => {
+    if (templateApp) {
+      return {
+        company: templateApp.company,
+        position: templateApp.position,
+        location: templateApp.location,
+        remote: templateApp.remote,
+        url: templateApp.url,
+        source: templateApp.source,
+        status: 'draft' as const,
+        salary: templateApp.salary,
+        contact: templateApp.contact,
+        notes: templateApp.notes,
+        appliedAt: new Date().toISOString(),
+      };
+    }
+    return createEmptyApplication();
+  });
 
   const sourceOptions = APPLICATION_SOURCES.map((s) => ({
     value: s,

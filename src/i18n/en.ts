@@ -56,6 +56,7 @@ export const en = {
     noHistory: 'No history yet.',
     appliedDate: 'Applied {date}',
     edit: 'Edit',
+    duplicate: 'Duplicate',
   },
 
   // --- New Application Form ---
@@ -183,6 +184,7 @@ export const en = {
     applicationUpdated: 'Application updated',
     applicationDeleted: 'Application deleted',
     statusChanged: 'Status changed',
+    applicationDuplicated: 'Application duplicated',
   },
 
   // --- Footer ---

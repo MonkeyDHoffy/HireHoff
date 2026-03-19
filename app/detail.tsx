@@ -104,6 +104,11 @@ export default function DetailScreen() {
     }
   };
 
+  const handleDuplicate = () => {
+    router.push(`/new?duplicate=${app.id}`);
+    showToast(t.toast.applicationDuplicated, 'info');
+  };
+
   const appliedDate = new Date(app.appliedAt).toLocaleDateString();
 
   return (
@@ -216,8 +221,14 @@ export default function DetailScreen() {
           )}
         </Card>
 
-        {/* --- Delete --- */}
+        {/* --- Actions --- */}
         <View style={styles.deleteSection}>
+          <Button
+            title={t.detail.duplicate}
+            variant="ghost"
+            onPress={handleDuplicate}
+            style={styles.duplicateButton}
+          />
           <Button
             title={t.detail.deleteButton}
             variant="outline"
@@ -355,6 +366,10 @@ const styles = StyleSheet.create({
   deleteSection: {
     marginTop: spacing.xl,
     alignItems: 'center',
+    gap: spacing.sm,
+  },
+  duplicateButton: {
+    width: '100%',
   },
   deleteButton: {
     borderColor: colors.error,
