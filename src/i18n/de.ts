@@ -211,6 +211,12 @@ export const de: Translations = {
     closed: 'Abgeschlossen',
   },
 
+  // --- Kanban ---
+  kanban: {
+    title: 'Kanban Board',
+    emptyColumn: 'Keine Bewerbungen',
+  },
+
   // --- Store ---
   store: {
     applicationCreated: 'Bewerbung erstellt',

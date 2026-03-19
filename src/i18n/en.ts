@@ -209,6 +209,12 @@ export const en = {
     closed: 'Closed',
   },
 
+  // --- Kanban ---
+  kanban: {
+    title: 'Kanban Board',
+    emptyColumn: 'No applications',
+  },
+
   // --- Store ---
   store: {
     applicationCreated: 'Application created',
