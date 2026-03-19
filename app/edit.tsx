@@ -8,7 +8,7 @@ import {
   Alert,
   Platform,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
@@ -24,22 +24,56 @@ import { useApplicationStore } from '../src/store';
 import {
   APPLICATION_SOURCES,
   APPLICATION_STATUSES,
-  createEmptyApplication,
   ApplicationSource,
   ApplicationStatus,
 } from '../src/types';
 import { useI18n } from '../src/i18n';
 
 /**
- * New Application form screen.
- * Allows the user to quickly add a new job application.
+ * Edit Application form screen.
+ * Pre-fills all fields from the existing application.
  */
-export default function NewApplicationScreen() {
+export default function EditApplicationScreen() {
   const router = useRouter();
-  const addApplication = useApplicationStore((s) => s.addApplication);
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const app = useApplicationStore((s) => s.getApplication(id ?? ''));
+  const updateApplication = useApplicationStore((s) => s.updateApplication);
   const t = useI18n((s) => s.t);
 
-  const [form, setForm] = useState(createEmptyApplication());
+  const [form, setForm] = useState(() => {
+    if (!app) return null;
+    return {
+      company: app.company,
+      position: app.position,
+      location: app.location,
+      remote: app.remote,
+      url: app.url,
+      source: app.source,
+      status: app.status,
+      salary: app.salary,
+      contact: app.contact,
+      notes: app.notes,
+      appliedAt: app.appliedAt,
+    };
+  });
+
+  if (!app || !form) {
+    return (
+      <View style={styles.screen}>
+        <Header
+          title={t.detail.notFoundTitle}
+          left={
+            <Pressable onPress={() => router.back()} hitSlop={8}>
+              <Text style={styles.backText}>{t.nav.back}</Text>
+            </Pressable>
+          }
+        />
+        <View style={styles.center}>
+          <Text style={styles.notFoundText}>{t.detail.notFoundMessage}</Text>
+        </View>
+      </View>
+    );
+  }
 
   const sourceOptions = APPLICATION_SOURCES.map((s) => ({
     value: s,
@@ -55,11 +89,10 @@ export default function NewApplicationScreen() {
     key: K,
     value: (typeof form)[K]
   ) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+    setForm((prev) => (prev ? { ...prev, [key]: value } : prev));
   };
 
   const handleSave = async () => {
-    // Validate required fields
     if (!form.company.trim()) {
       showAlert(t.form.validationCompany);
       return;
@@ -69,7 +102,7 @@ export default function NewApplicationScreen() {
       return;
     }
 
-    await addApplication(form, t.store.applicationCreated);
+    await updateApplication(app.id, form);
     router.back();
   };
 
@@ -84,7 +117,7 @@ export default function NewApplicationScreen() {
   return (
     <View style={styles.screen}>
       <Header
-        title={t.form.title}
+        title={t.form.editTitle}
         left={
           <Pressable onPress={() => router.back()} hitSlop={8}>
             <Text style={styles.backText}>{t.nav.back}</Text>
@@ -140,12 +173,6 @@ export default function NewApplicationScreen() {
             value={form.source}
             options={sourceOptions}
             onChange={(v) => updateField('source', v as ApplicationSource)}
-          />
-          <Select
-            label={t.form.statusLabel}
-            value={form.status}
-            options={statusOptions}
-            onChange={(v) => updateField('status', v as ApplicationStatus)}
           />
           <Input
             label={t.form.urlLabel}
@@ -212,6 +239,15 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: spacing.md,
+  },
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notFoundText: {
+    ...typography.body,
+    color: colors.textSecondary,
   },
   backText: {
     ...typography.label,

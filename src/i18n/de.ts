@@ -8,6 +8,7 @@ export const de: Translations = {
   nav: {
     dashboard: 'Dashboard',
     newApplication: 'Neue Bewerbung',
+    allApplications: 'Alle Bewerbungen',
     settings: 'Einstellungen',
     back: '← Zurück',
     menu: 'Menü',
@@ -56,11 +57,13 @@ export const de: Translations = {
     timeline: 'Verlauf',
     noHistory: 'Noch kein Verlauf.',
     appliedDate: 'Beworben am {date}',
+    edit: 'Bearbeiten',
   },
 
   // --- New Application Form ---
   form: {
     title: 'Neue Bewerbung',
+    editTitle: 'Bewerbung bearbeiten',
     save: 'Speichern',
     saveApplication: 'Bewerbung speichern',
     sectionCompany: 'Unternehmen & Position',
@@ -179,5 +182,15 @@ export const de: Translations = {
   // --- Footer ---
   footer: {
     brand: 'ApplyHoff',
+  },
+
+  // --- Application List ---
+  list: {
+    title: 'Alle Bewerbungen',
+    searchPlaceholder: 'Unternehmen oder Position suchen...',
+    filterAll: 'Alle',
+    noResults: 'Keine passenden Bewerbungen',
+    noResultsDescription: 'Passe deine Suche oder Filter an.',
+    count: '{count} Bewerbungen',
   },
 };

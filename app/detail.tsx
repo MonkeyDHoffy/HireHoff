@@ -65,13 +65,13 @@ export default function DetailScreen() {
     label: t.status[s],
   }));
 
-  const handleStatusChange = (newStatus: string) => {
-    changeStatus(app.id, newStatus as ApplicationStatus);
+  const handleStatusChange = async (newStatus: string) => {
+    await changeStatus(app.id, newStatus as ApplicationStatus);
   };
 
   const handleDelete = () => {
-    const doDelete = () => {
-      deleteApplication(app.id);
+    const doDelete = async () => {
+      await deleteApplication(app.id);
       router.back();
     };
 
@@ -101,6 +101,11 @@ export default function DetailScreen() {
         left={
           <Pressable onPress={() => router.back()} hitSlop={8}>
             <Text style={styles.backText}>{t.nav.back}</Text>
+          </Pressable>
+        }
+        right={
+          <Pressable onPress={() => router.push(`/edit?id=${app.id}`)} hitSlop={8}>
+            <Text style={styles.editText}>{t.detail.edit}</Text>
           </Pressable>
         }
       />
@@ -254,6 +259,11 @@ const styles = StyleSheet.create({
   backText: {
     ...typography.label,
     color: colors.primary,
+  },
+  editText: {
+    ...typography.label,
+    color: colors.primary,
+    fontWeight: '700',
   },
   statusCard: {
     marginTop: spacing.sm,

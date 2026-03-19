@@ -28,6 +28,7 @@ export default function DashboardScreen() {
   const menuItems = [
     { label: t.nav.dashboard, route: '/' },
     { label: t.nav.newApplication, route: '/new' },
+    { label: t.nav.allApplications, route: '/applications' },
     { label: t.nav.settings, route: '/settings' },
   ];
 
@@ -120,7 +121,7 @@ export default function DashboardScreen() {
               <Button
                 title={t.dashboard.viewAll}
                 variant="ghost"
-                onPress={() => {}}
+                onPress={() => router.push('/applications')}
                 style={styles.viewAll}
               />
             )}

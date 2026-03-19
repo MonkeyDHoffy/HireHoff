@@ -6,6 +6,7 @@ export const en = {
   nav: {
     dashboard: 'Dashboard',
     newApplication: 'New Application',
+    allApplications: 'All Applications',
     settings: 'Settings',
     back: '← Back',
     menu: 'Menu',
@@ -54,11 +55,13 @@ export const en = {
     timeline: 'Timeline',
     noHistory: 'No history yet.',
     appliedDate: 'Applied {date}',
+    edit: 'Edit',
   },
 
   // --- New Application Form ---
   form: {
     title: 'New Application',
+    editTitle: 'Edit Application',
     save: 'Save',
     saveApplication: 'Save Application',
     sectionCompany: 'Company & Position',
@@ -177,6 +180,16 @@ export const en = {
   // --- Footer ---
   footer: {
     brand: 'ApplyHoff',
+  },
+
+  // --- Application List ---
+  list: {
+    title: 'All Applications',
+    searchPlaceholder: 'Search company or position...',
+    filterAll: 'All',
+    noResults: 'No matching applications',
+    noResultsDescription: 'Try adjusting your search or filter.',
+    count: '{count} applications',
   },
 } as const;
 
