@@ -13,9 +13,13 @@
       "backgroundColor": "#FFF8F0"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.monkeydhoff.applyhoff",
+      "buildNumber": "1"
     },
     "android": {
+      "package": "com.monkeydhoff.applyhoff",
+      "versionCode": 1,
       "adaptiveIcon": {
         "backgroundColor": "#FFF8F0",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -29,7 +33,8 @@
     },
     "plugins": [
       "expo-router",
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-sharing"
     ]
   }
 }

@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { Application } from '../types';
 
 // ─── CSV Export (Excel-compatible with semicolons) ─────────────
@@ -117,4 +118,35 @@ function downloadBlobWeb(blob: Blob, filename: string): void {
   link.click();
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+}
+
+// ─── Native Share Helper ────────────────────────────────────────
+
+export async function shareFileNative(content: string, filename: string): Promise<void> {
+  const FileSystem = await import('expo-file-system');
+  const Sharing = await import('expo-sharing');
+
+  const fileUri = FileSystem.documentDirectory + filename;
+  await FileSystem.writeAsStringAsync(fileUri, content, {
+    encoding: FileSystem.EncodingType.UTF8,
+  });
+
+  if (await Sharing.isAvailableAsync()) {
+    await Sharing.shareAsync(fileUri);
+  }
+}
+
+// ─── Universal Export (auto-selects web vs native) ──────────────
+
+export async function exportFile(content: string, filename: string): Promise<void> {
+  if (Platform.OS === 'web') {
+    const isCSV = filename.endsWith('.csv');
+    if (isCSV) {
+      downloadCsvWeb(content, filename);
+    } else {
+      downloadTextWeb(content, filename);
+    }
+  } else {
+    await shareFileNative(content, filename);
+  }
 }
