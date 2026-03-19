@@ -172,17 +172,3 @@ export const useApplicationStore = create<ApplicationStore>((set, get) => ({
       );
   },
 }));
-
-  getApplication: (id) => {
-    return get().applications.find((app) => app.id === id);
-  },
-
-  getHistory: (applicationId) => {
-    return get()
-      .statusHistory.filter((ev) => ev.applicationId === applicationId)
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      );
-  },
-}))
