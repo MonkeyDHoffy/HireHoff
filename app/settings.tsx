@@ -14,7 +14,7 @@ import { useI18n, type Language } from '../src/i18n';
 import { useApplicationStore } from '../src/store';
 import { useToast } from '../src/store/toast';
 import { useTheme, type ThemeMode } from '../src/store/theme';
-import { applicationsToCsv, downloadCsvWeb } from '../src/utils/csv';
+import { applicationsToCsv, applicationsToDetailedText, applicationsToSimpleList, downloadCsvWeb, downloadTextWeb } from '../src/utils/csv';
 
 /**
  * Settings screen.
@@ -101,8 +101,8 @@ export default function SettingsScreen() {
           </Card>
         </Pressable>
 
-        {/* --- CSV Export --- */}
-        <SectionTitle title={t.settings.exportCsv} />
+        {/* --- Export --- */}
+        <SectionTitle title={t.settings.exportTitle} />
         <Card>
           <Button
             title={t.settings.exportCsv}
@@ -112,9 +112,40 @@ export default function SettingsScreen() {
               if (Platform.OS === 'web') {
                 downloadCsvWeb(csv, 'applyhoff-export.csv');
               } else {
-                // Native: copy to clipboard as fallback
                 import('react-native').then(({ Clipboard }) => {
                   Clipboard?.setString?.(csv);
+                });
+              }
+              showToast(t.settings.exportSuccess);
+            }}
+          />
+          <View style={{ height: spacing.sm }} />
+          <Button
+            title={t.settings.exportDetailed}
+            variant="outline"
+            onPress={() => {
+              const text = applicationsToDetailedText(applications);
+              if (Platform.OS === 'web') {
+                downloadTextWeb(text, 'applyhoff-detailed.txt');
+              } else {
+                import('react-native').then(({ Clipboard }) => {
+                  Clipboard?.setString?.(text);
+                });
+              }
+              showToast(t.settings.exportSuccess);
+            }}
+          />
+          <View style={{ height: spacing.sm }} />
+          <Button
+            title={t.settings.exportList}
+            variant="outline"
+            onPress={() => {
+              const text = applicationsToSimpleList(applications);
+              if (Platform.OS === 'web') {
+                downloadTextWeb(text, 'applyhoff-list.txt');
+              } else {
+                import('react-native').then(({ Clipboard }) => {
+                  Clipboard?.setString?.(text);
                 });
               }
               showToast(t.settings.exportSuccess);
