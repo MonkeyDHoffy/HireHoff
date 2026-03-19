@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
@@ -12,8 +12,9 @@ import { Button } from '../src/components/Button';
 import { Footer } from '../src/components/Footer';
 import { BurgerMenu } from '../src/components/BurgerMenu';
 import { StatusPill } from '../src/components/StatusPill';
+import { Select } from '../src/components/Select';
 import { useApplicationStore } from '../src/store';
-import { STATUS_COLORS } from '../src/types';
+import { STATUS_COLORS, APPLICATION_STATUSES, ApplicationStatus } from '../src/types';
 import { useI18n } from '../src/i18n';
 
 /**
@@ -23,7 +24,13 @@ import { useI18n } from '../src/i18n';
 export default function DashboardScreen() {
   const router = useRouter();
   const applications = useApplicationStore((s) => s.applications);
+  const changeStatus = useApplicationStore((s) => s.changeStatus);
   const t = useI18n((s) => s.t);
+
+  const statusOptions = APPLICATION_STATUSES.map((s) => ({
+    value: s,
+    label: t.status[s],
+  }));
 
   const menuItems = [
     { label: t.nav.dashboard, route: '/' },
@@ -113,6 +120,13 @@ export default function DashboardScreen() {
                       {app.remote ? ` · ${t.dashboard.remote}` : ''}
                     </Text>
                   ) : null}
+                  <View style={styles.statusSelect}>
+                    <Select
+                      value={app.status}
+                      options={statusOptions}
+                      onChange={(val) => changeStatus(app.id, val as ApplicationStatus)}
+                    />
+                  </View>
                 </Card>
               </Pressable>
             ))}
@@ -200,6 +214,9 @@ const styles = StyleSheet.create({
     ...typography.caption,
     color: colors.textLight,
     marginTop: spacing.xs,
+  },
+  statusSelect: {
+    marginTop: spacing.sm,
   },
   viewAll: {
     marginTop: spacing.sm,
