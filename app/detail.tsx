@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -36,9 +36,18 @@ export default function DetailScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const app = useApplicationStore((s) => s.getApplication(id ?? ''));
-  const history = useApplicationStore((s) => s.getHistory(id ?? ''));
+  const applications = useApplicationStore((s) => s.applications);
+  const statusHistory = useApplicationStore((s) => s.statusHistory);
   const changeStatus = useApplicationStore((s) => s.changeStatus);
+
+  const app = useMemo(() => applications.find((a) => a.id === id), [applications, id]);
+  const history = useMemo(
+    () =>
+      statusHistory
+        .filter((ev) => ev.applicationId === id)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+    [statusHistory, id]
+  );
   const deleteApplication = useApplicationStore((s) => s.deleteApplication);
   const t = useI18n((s) => s.t);
 

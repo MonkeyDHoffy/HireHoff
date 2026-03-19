@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -36,7 +36,8 @@ import { useI18n } from '../src/i18n';
 export default function EditApplicationScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const app = useApplicationStore((s) => s.getApplication(id ?? ''));
+  const applications = useApplicationStore((s) => s.applications);
+  const app = useMemo(() => applications.find((a) => a.id === id), [applications, id]);
   const updateApplication = useApplicationStore((s) => s.updateApplication);
   const t = useI18n((s) => s.t);
 
