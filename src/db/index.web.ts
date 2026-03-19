@@ -6,13 +6,14 @@
  * Same public API as index.ts (native SQLite version).
  */
 
-import type { Application, StatusEvent, ApplicationStatus, ApplicationSource, Reminder } from '../types';
+import type { Application, StatusEvent, ApplicationStatus, ApplicationSource, Reminder, ApplicationTemplate } from '../types';
 
 const STORAGE_KEYS = {
   applications: 'applyhoff_applications',
   statusHistory: 'applyhoff_status_history',
   settings: 'applyhoff_settings',
   reminders: 'applyhoff_reminders',
+  templates: 'applyhoff_templates',
 } as const;
 
 // ─── Helpers ─────────────────────────────────────────────────
@@ -149,4 +150,24 @@ export async function updateReminderInDb(id: string, data: Partial<Omit<Reminder
 export async function deleteReminderFromDb(id: string): Promise<void> {
   const reminders = loadJSON<Reminder[]>(STORAGE_KEYS.reminders, []);
   saveJSON(STORAGE_KEYS.reminders, reminders.filter((r) => r.id !== id));
+}
+
+// ─── Templates ──────────────────────────────────────────────────
+
+export async function getAllTemplates(): Promise<ApplicationTemplate[]> {
+  const templates = loadJSON<ApplicationTemplate[]>(STORAGE_KEYS.templates, []);
+  return templates.sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+}
+
+export async function insertTemplate(tpl: ApplicationTemplate): Promise<void> {
+  const templates = loadJSON<ApplicationTemplate[]>(STORAGE_KEYS.templates, []);
+  templates.push(tpl);
+  saveJSON(STORAGE_KEYS.templates, templates);
+}
+
+export async function deleteTemplateFromDb(id: string): Promise<void> {
+  const templates = loadJSON<ApplicationTemplate[]>(STORAGE_KEYS.templates, []);
+  saveJSON(STORAGE_KEYS.templates, templates.filter((t) => t.id !== id));
 }

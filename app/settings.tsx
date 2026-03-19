@@ -30,6 +30,8 @@ export default function SettingsScreen() {
   const themeMode = useTheme((s) => s.mode);
   const setThemeMode = useTheme((s) => s.setMode);
   const c = useTheme((s) => s.colors);
+  const templates = useApplicationStore((s) => s.templates);
+  const deleteTemplate = useApplicationStore((s) => s.deleteTemplate);
 
   const themeOptions = [
     { value: 'light', label: 'Light' },
@@ -120,6 +122,52 @@ export default function SettingsScreen() {
           />
         </Card>
 
+        {/* --- Templates --- */}
+        <SectionTitle title={t.template.title} />
+        <Card>
+          {templates.length === 0 ? (
+            <Text style={styles.captionText}>{t.template.noTemplates}</Text>
+          ) : (
+            templates.map((tpl) => (
+              <View key={tpl.id} style={styles.templateRow}>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.bodyText}>{tpl.name}</Text>
+                  <Text style={styles.captionText}>
+                    {[tpl.company, tpl.position].filter(Boolean).join(' — ') || '—'}
+                  </Text>
+                </View>
+                <Pressable
+                  hitSlop={8}
+                  onPress={() => {
+                    const doDelete = async () => {
+                      await deleteTemplate(tpl.id);
+                      showToast(t.template.templateDeleted);
+                    };
+                    if (Platform.OS === 'web') {
+                      if (window.confirm(t.template.deleteConfirm.replace('{name}', tpl.name))) {
+                        doDelete();
+                      }
+                    } else {
+                      import('react-native').then(({ Alert: A }) => {
+                        A.alert(
+                          t.template.title,
+                          t.template.deleteConfirm.replace('{name}', tpl.name),
+                          [
+                            { text: t.dashboard.confirmCancel, style: 'cancel' },
+                            { text: t.detail.deleteConfirm, style: 'destructive', onPress: doDelete },
+                          ]
+                        );
+                      });
+                    }
+                  }}
+                >
+                  <Text style={styles.deleteIcon}>×</Text>
+                </Pressable>
+              </View>
+            ))
+          )}
+        </Card>
+
         <View style={{ height: spacing.xxl }} />
       </ScrollView>
 
@@ -166,5 +214,17 @@ const styles = StyleSheet.create({
   menuArrow: {
     ...typography.body,
     color: colors.textLight,
+  },
+  templateRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  deleteIcon: {
+    fontSize: 20,
+    color: colors.error,
+    paddingHorizontal: spacing.sm,
   },
 });

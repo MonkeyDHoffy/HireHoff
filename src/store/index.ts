@@ -10,6 +10,7 @@ import {
   Application,
   StatusEvent,
   Reminder,
+  ApplicationTemplate,
   ApplicationStatus,
   generateId,
 } from '../types';
@@ -17,6 +18,7 @@ import {
   getAllApplications,
   getAllHistory,
   getAllReminders,
+  getAllTemplates,
   insertApplication,
   updateApplicationInDb,
   deleteApplicationFromDb,
@@ -24,6 +26,8 @@ import {
   insertReminder,
   updateReminderInDb,
   deleteReminderFromDb,
+  insertTemplate,
+  deleteTemplateFromDb,
 } from '../db';
 
 // --- Store Types ---
@@ -35,6 +39,8 @@ interface ApplicationStore {
   statusHistory: StatusEvent[];
   /** All reminders */
   reminders: Reminder[];
+  /** All application templates */
+  templates: ApplicationTemplate[];
   /** Whether the store has loaded data from SQLite */
   hydrated: boolean;
 
@@ -77,6 +83,11 @@ interface ApplicationStore {
   toggleReminder: (id: string) => Promise<void>;
   /** Delete a reminder */
   deleteReminder: (id: string) => Promise<void>;
+
+  /** Save application as template */
+  addTemplate: (name: string, data: Omit<ApplicationTemplate, 'id' | 'name' | 'createdAt'>) => Promise<void>;
+  /** Delete a template */
+  deleteTemplate: (id: string) => Promise<void>;
 }
 
 // --- Store ---
@@ -85,15 +96,17 @@ export const useApplicationStore = create<ApplicationStore>((set, get) => ({
   applications: [],
   statusHistory: [],
   reminders: [],
+  templates: [],
   hydrated: false,
 
   hydrate: async () => {
-    const [applications, statusHistory, reminders] = await Promise.all([
+    const [applications, statusHistory, reminders, templates] = await Promise.all([
       getAllApplications(),
       getAllHistory(),
       getAllReminders(),
+      getAllTemplates(),
     ]);
-    set({ applications, statusHistory, reminders, hydrated: true });
+    set({ applications, statusHistory, reminders, templates, hydrated: true });
   },
 
   addApplication: async (data, initialNote) => {
@@ -215,6 +228,24 @@ export const useApplicationStore = create<ApplicationStore>((set, get) => ({
     await deleteReminderFromDb(id);
     set((state) => ({
       reminders: state.reminders.filter((r) => r.id !== id),
+    }));
+  },
+
+  addTemplate: async (name, data) => {
+    const tpl: ApplicationTemplate = {
+      ...data,
+      id: generateId(),
+      name,
+      createdAt: new Date().toISOString(),
+    };
+    await insertTemplate(tpl);
+    set((state) => ({ templates: [tpl, ...state.templates] }));
+  },
+
+  deleteTemplate: async (id) => {
+    await deleteTemplateFromDb(id);
+    set((state) => ({
+      templates: state.templates.filter((t) => t.id !== id),
     }));
   },
 }));

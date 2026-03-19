@@ -246,6 +246,23 @@ export const en = {
     reminderToggled: 'Reminder updated',
   },
 
+  // --- Templates ---
+  template: {
+    title: 'Templates',
+    saveAsTemplate: 'Save as Template',
+    templateName: 'Template Name',
+    templateNamePlaceholder: 'e.g. Frontend Startups',
+    saveTemplate: 'Save',
+    cancelTemplate: 'Cancel',
+    noTemplates: 'No templates saved yet.',
+    useTemplate: 'Use Template',
+    selectTemplate: 'Select template...',
+    none: 'None',
+    deleteConfirm: 'Delete template "{name}"?',
+    templateSaved: 'Template saved',
+    templateDeleted: 'Template deleted',
+  },
+
   // --- Footer ---
   footer: {
     brand: 'ApplyHoff',

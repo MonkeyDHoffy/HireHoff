@@ -248,6 +248,23 @@ export const de: Translations = {
     reminderToggled: 'Erinnerung aktualisiert',
   },
 
+  // --- Templates ---
+  template: {
+    title: 'Vorlagen',
+    saveAsTemplate: 'Als Vorlage speichern',
+    templateName: 'Vorlagenname',
+    templateNamePlaceholder: 'z.B. Frontend Startups',
+    saveTemplate: 'Speichern',
+    cancelTemplate: 'Abbrechen',
+    noTemplates: 'Noch keine Vorlagen gespeichert.',
+    useTemplate: 'Vorlage verwenden',
+    selectTemplate: 'Vorlage auswählen...',
+    none: 'Keine',
+    deleteConfirm: 'Vorlage "{name}" löschen?',
+    templateSaved: 'Vorlage gespeichert',
+    templateDeleted: 'Vorlage gelöscht',
+  },
+
   // --- Footer ---
   footer: {
     brand: 'ApplyHoff',

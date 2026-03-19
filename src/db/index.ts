@@ -6,7 +6,7 @@
  */
 
 import * as SQLite from 'expo-sqlite';
-import type { Application, StatusEvent, ApplicationStatus, ApplicationSource, Reminder } from '../types';
+import type { Application, StatusEvent, ApplicationStatus, ApplicationSource, Reminder, ApplicationTemplate } from '../types';
 
 let db: SQLite.SQLiteDatabase | null = null;
 
@@ -57,6 +57,22 @@ export async function initDatabase(): Promise<void> {
       done INTEGER NOT NULL DEFAULT 0,
       createdAt TEXT NOT NULL,
       FOREIGN KEY (applicationId) REFERENCES applications(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS templates (
+      id TEXT PRIMARY KEY NOT NULL,
+      name TEXT NOT NULL,
+      company TEXT NOT NULL DEFAULT '',
+      position TEXT NOT NULL DEFAULT '',
+      location TEXT NOT NULL DEFAULT '',
+      remote INTEGER NOT NULL DEFAULT 0,
+      url TEXT NOT NULL DEFAULT '',
+      source TEXT NOT NULL DEFAULT 'other',
+      salary TEXT NOT NULL DEFAULT '',
+      contact TEXT NOT NULL DEFAULT '',
+      notes TEXT NOT NULL DEFAULT '',
+      tags TEXT NOT NULL DEFAULT '[]',
+      createdAt TEXT NOT NULL
     );
   `);
 }
@@ -260,6 +276,50 @@ function rowToReminder(row: Record<string, unknown>): Reminder {
     dueAt: row.dueAt as string,
     message: (row.message as string) ?? '',
     done: Boolean(row.done),
+    createdAt: row.createdAt as string,
+  };
+}
+
+// ─── Templates ──────────────────────────────────────────────────
+
+export async function getAllTemplates(): Promise<ApplicationTemplate[]> {
+  const rows = await getDb().getAllAsync<Record<string, unknown>>(
+    'SELECT * FROM templates ORDER BY createdAt DESC'
+  );
+  return rows.map(rowToTemplate);
+}
+
+export async function insertTemplate(tpl: ApplicationTemplate): Promise<void> {
+  await getDb().runAsync(
+    `INSERT INTO templates (id, name, company, position, location, remote, url, source, salary, contact, notes, tags, createdAt)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      tpl.id, tpl.name, tpl.company, tpl.position, tpl.location,
+      tpl.remote ? 1 : 0, tpl.url, tpl.source, tpl.salary,
+      tpl.contact, tpl.notes, JSON.stringify(tpl.tags ?? []),
+      tpl.createdAt,
+    ]
+  );
+}
+
+export async function deleteTemplateFromDb(id: string): Promise<void> {
+  await getDb().runAsync('DELETE FROM templates WHERE id = ?', [id]);
+}
+
+function rowToTemplate(row: Record<string, unknown>): ApplicationTemplate {
+  return {
+    id: row.id as string,
+    name: row.name as string,
+    company: (row.company as string) ?? '',
+    position: (row.position as string) ?? '',
+    location: (row.location as string) ?? '',
+    remote: Boolean(row.remote),
+    url: (row.url as string) ?? '',
+    source: (row.source as ApplicationSource) ?? 'other',
+    salary: (row.salary as string) ?? '',
+    contact: (row.contact as string) ?? '',
+    notes: (row.notes as string) ?? '',
+    tags: JSON.parse((row.tags as string) || '[]') as string[],
     createdAt: row.createdAt as string,
   };
 }

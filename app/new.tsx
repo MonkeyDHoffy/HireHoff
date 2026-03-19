@@ -45,6 +45,8 @@ export default function NewApplicationScreen() {
   const showToast = useToast((s) => s.show);
   const c = useTheme((s) => s.colors);
 
+  const templates = useApplicationStore((s) => s.templates);
+
   const templateApp = useMemo(
     () => (duplicate ? applications.find((a) => a.id === duplicate) : undefined),
     [duplicate, applications]
@@ -133,6 +135,41 @@ export default function NewApplicationScreen() {
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
+        {/* --- Template Selector --- */}
+        {templates.length > 0 && (
+          <>
+            <SectionTitle title={t.template.useTemplate} />
+            <Card>
+              <Select
+                label={t.template.selectTemplate}
+                value=""
+                options={[
+                  { value: '', label: t.template.none },
+                  ...templates.map((tpl) => ({ value: tpl.id, label: tpl.name })),
+                ]}
+                onChange={(tplId) => {
+                  const tpl = templates.find((t) => t.id === tplId);
+                  if (!tpl) return;
+                  setForm({
+                    company: tpl.company,
+                    position: tpl.position,
+                    location: tpl.location,
+                    remote: tpl.remote,
+                    url: tpl.url,
+                    source: tpl.source,
+                    status: 'draft',
+                    salary: tpl.salary,
+                    contact: tpl.contact,
+                    notes: tpl.notes,
+                    tags: tpl.tags ?? [],
+                    appliedAt: new Date().toISOString(),
+                  });
+                }}
+              />
+            </Card>
+          </>
+        )}
+
         {/* --- Required Fields --- */}
         <SectionTitle title={t.form.sectionCompany} />
         <Card>

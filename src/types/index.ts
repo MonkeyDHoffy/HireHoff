@@ -122,6 +122,23 @@ export interface DocumentRef {
   createdAt: string;       // ISO date string
 }
 
+/** A reusable application template */
+export interface ApplicationTemplate {
+  id: string;
+  name: string;
+  company: string;
+  position: string;
+  location: string;
+  remote: boolean;
+  url: string;
+  source: ApplicationSource;
+  salary: string;
+  contact: string;
+  notes: string;
+  tags: string[];
+  createdAt: string;
+}
+
 // --- Helpers ---
 
 /** Generate a simple unique ID */

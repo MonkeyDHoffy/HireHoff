@@ -63,9 +63,12 @@ export default function DetailScreen() {
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
   const c = useTheme((s) => s.colors);
+  const addTemplate = useApplicationStore((s) => s.addTemplate);
   const [reminderMsg, setReminderMsg] = useState('');
   const [reminderDays, setReminderDays] = useState('14');
   const [statusNote, setStatusNote] = useState('');
+  const [templateName, setTemplateName] = useState('');
+  const [showTemplateInput, setShowTemplateInput] = useState(false);
 
   if (!app) {
     return (
@@ -323,6 +326,53 @@ export default function DetailScreen() {
 
         {/* --- Actions --- */}
         <View style={styles.deleteSection}>
+          {showTemplateInput ? (
+            <Card style={{ width: '100%' }}>
+              <Input
+                label={t.template.templateName}
+                placeholder={t.template.templateNamePlaceholder}
+                value={templateName}
+                onChangeText={setTemplateName}
+              />
+              <View style={styles.templateBtnRow}>
+                <Button
+                  title={t.template.cancelTemplate}
+                  variant="ghost"
+                  size="sm"
+                  onPress={() => { setShowTemplateInput(false); setTemplateName(''); }}
+                />
+                <Button
+                  title={t.template.saveTemplate}
+                  size="sm"
+                  onPress={async () => {
+                    const name = templateName.trim() || `${app.company} — ${app.position}`;
+                    await addTemplate(name, {
+                      company: app.company,
+                      position: app.position,
+                      location: app.location,
+                      remote: app.remote,
+                      url: app.url,
+                      source: app.source,
+                      salary: app.salary,
+                      contact: app.contact,
+                      notes: app.notes,
+                      tags: app.tags,
+                    });
+                    setShowTemplateInput(false);
+                    setTemplateName('');
+                    showToast(t.template.templateSaved);
+                  }}
+                />
+              </View>
+            </Card>
+          ) : (
+            <Button
+              title={t.template.saveAsTemplate}
+              variant="ghost"
+              onPress={() => setShowTemplateInput(true)}
+              style={styles.duplicateButton}
+            />
+          )}
           <Button
             title={t.detail.duplicate}
             variant="ghost"
@@ -473,6 +523,12 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
     alignItems: 'center',
     gap: spacing.sm,
+  },
+  templateBtnRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
   },
   duplicateButton: {
     width: '100%',
