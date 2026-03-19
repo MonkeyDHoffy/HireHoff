@@ -14,6 +14,7 @@ import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
 import { shadows } from '../theme/shadows';
+import { useI18n } from '../i18n';
 
 // --- Types ---
 
@@ -62,6 +63,7 @@ const iconStyles = StyleSheet.create({
 export const BurgerMenu: React.FC<BurgerMenuProps> = ({ items }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const t = useI18n((s) => s.t);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(-250)).current;
 
@@ -111,7 +113,7 @@ export const BurgerMenu: React.FC<BurgerMenuProps> = ({ items }) => {
         onPress={() => setOpen(true)}
         hitSlop={8}
         accessibilityRole="button"
-        accessibilityLabel="Open menu"
+        accessibilityLabel={t.nav.openMenu}
         style={styles.trigger}
       >
         <BurgerIcon />
@@ -135,7 +137,7 @@ export const BurgerMenu: React.FC<BurgerMenuProps> = ({ items }) => {
             { transform: [{ translateX: slideAnim }] },
           ]}
         >
-          <Text style={styles.drawerTitle}>Menu</Text>
+          <Text style={styles.drawerTitle}>{t.nav.menu}</Text>
 
           {items.map((item) => (
             <Pressable
@@ -152,7 +154,7 @@ export const BurgerMenu: React.FC<BurgerMenuProps> = ({ items }) => {
           ))}
 
           <Pressable style={styles.closeBtn} onPress={close}>
-            <Text style={styles.closeBtnText}>Close</Text>
+            <Text style={styles.closeBtnText}>{t.nav.close}</Text>
           </Pressable>
         </Animated.View>
       </Modal>

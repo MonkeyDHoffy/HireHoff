@@ -1,0 +1,183 @@
+/**
+ * English translations — ApplyHoff
+ */
+export const en = {
+  // --- Navigation / Menu ---
+  nav: {
+    dashboard: 'Dashboard',
+    newApplication: 'New Application',
+    settings: 'Settings',
+    back: '← Back',
+    menu: 'Menu',
+    close: 'Close',
+    openMenu: 'Open menu',
+  },
+
+  // --- Dashboard ---
+  dashboard: {
+    overview: 'Overview',
+    recentApplications: 'Recent Applications',
+    total: 'Total',
+    pending: 'Pending',
+    interviews: 'Interviews',
+    viewAll: 'View All',
+    addApplication: '+ Add Application',
+    noApplicationsTitle: 'No applications yet',
+    noApplicationsDescription:
+      'Start tracking your job applications by adding your first one.',
+    remote: 'Remote',
+    appliedDate: 'Applied {date}',
+  },
+
+  // --- Detail Screen ---
+  detail: {
+    notFoundTitle: 'Not Found',
+    notFoundMessage: 'Application not found.',
+    deleteTitle: 'Delete Application',
+    deleteMessage: 'Delete application at {company}?',
+    deleteCancel: 'Cancel',
+    deleteConfirm: 'Delete',
+    deleteButton: 'Delete Application',
+    details: 'Details',
+    company: 'Company',
+    position: 'Position',
+    location: 'Location',
+    remote: 'Remote',
+    source: 'Source',
+    salary: 'Salary',
+    contact: 'Contact',
+    url: 'URL',
+    emptyValue: '—',
+    notes: 'Notes',
+    changeStatus: 'Change Status',
+    status: 'Status',
+    timeline: 'Timeline',
+    noHistory: 'No history yet.',
+    appliedDate: 'Applied {date}',
+  },
+
+  // --- New Application Form ---
+  form: {
+    title: 'New Application',
+    save: 'Save',
+    saveApplication: 'Save Application',
+    sectionCompany: 'Company & Position',
+    companyLabel: 'Company *',
+    companyPlaceholder: 'e.g. Acme Corp',
+    positionLabel: 'Position *',
+    positionPlaceholder: 'e.g. Frontend Developer',
+    locationLabel: 'Location',
+    locationPlaceholder: 'e.g. Berlin, Germany',
+    remoteLabel: 'Remote',
+    sectionDetails: 'Details',
+    sourceLabel: 'Source',
+    statusLabel: 'Status',
+    urlLabel: 'Job Posting URL',
+    urlPlaceholder: 'https://...',
+    salaryLabel: 'Salary',
+    salaryPlaceholder: 'e.g. 60k-70k EUR',
+    contactLabel: 'Contact Person',
+    contactPlaceholder: 'e.g. Jane Doe, HR',
+    sectionNotes: 'Notes',
+    notesLabel: 'Notes',
+    notesPlaceholder: 'Interview questions, impressions, benefits...',
+    validationCompany: 'Company name is required',
+    validationPosition: 'Position is required',
+    validationTitle: 'Missing field',
+  },
+
+  // --- Settings ---
+  settings: {
+    title: 'Settings',
+    appInfo: 'App Info',
+    version: 'ApplyHoff v1.0.0',
+    description: 'Job application tracker built with Expo + React Native',
+    language: 'Language',
+    languageLabel: 'Language',
+    componentPreview: 'Component Preview',
+    buttons: 'Buttons',
+    primaryButton: 'Primary Button',
+    secondary: 'Secondary',
+    outline: 'Outline',
+    ghost: 'Ghost',
+    disabled: 'Disabled',
+    loading: 'Loading...',
+    buttonSizes: 'Button Sizes',
+    small: 'Small',
+    medium: 'Medium',
+    large: 'Large',
+    badges: 'Badges',
+    badgeDefault: 'Default',
+    badgePrimary: 'Primary',
+    badgeSuccess: 'Success',
+    badgeWarning: 'Warning',
+    badgeError: 'Error',
+    statusPills: 'Status Pills',
+    statusApplied: 'Applied',
+    statusInterview: 'Interview',
+    statusRejected: 'Rejected',
+    surfaces: 'Surfaces',
+    defaultSurface: 'Default Surface',
+    altSurface: 'Alt Surface',
+    inputFields: 'Input Fields',
+    companyLabel: 'Company',
+    companyPlaceholder: 'e.g. Acme Corp',
+    positionLabel: 'Position',
+    positionPlaceholder: 'e.g. Frontend Developer',
+    notesLabel: 'Notes',
+    notesPlaceholder: 'Any additional notes...',
+    withError: 'With Error',
+    requiredField: 'Required field',
+    fieldRequired: 'This field is required',
+    emptyState: 'Empty State',
+    emptyStateTitle: 'No applications yet',
+    emptyStateDescription:
+      'Start tracking your job applications by adding your first one.',
+    addApplication: 'Add Application',
+    typographyPreview: 'Typography Preview',
+    heading1: 'Heading 1',
+    heading2: 'Heading 2',
+    heading3: 'Heading 3',
+    bodyText: 'Body text — regular',
+    bodySmall: 'Body small — secondary',
+    caption: 'Caption — light',
+    labelText: 'Label — medium weight',
+    colorPalette: 'Color Palette',
+  },
+
+  // --- Status Labels ---
+  status: {
+    draft: 'Draft',
+    applied: 'Applied',
+    acknowledged: 'Acknowledged',
+    interview_1: 'Interview 1',
+    interview_2: 'Interview 2',
+    assignment: 'Assignment',
+    offer: 'Offer',
+    rejected: 'Rejected',
+    withdrawn: 'Withdrawn',
+  },
+
+  // --- Source Labels ---
+  source: {
+    linkedin: 'LinkedIn',
+    indeed: 'Indeed',
+    company_website: 'Company Website',
+    referral: 'Referral',
+    recruiter: 'Recruiter',
+    job_board: 'Job Board',
+    other: 'Other',
+  },
+
+  // --- Store ---
+  store: {
+    applicationCreated: 'Application created',
+  },
+
+  // --- Footer ---
+  footer: {
+    brand: 'ApplyHoff',
+  },
+} as const;
+
+export type Translations = typeof en;

@@ -16,3 +16,5 @@ export { SectionTitle } from './SectionTitle';
 export { EmptyState } from './EmptyState';
 export { StatusPill } from './StatusPill';
 export { BurgerMenu } from './BurgerMenu';
+export { Select } from './Select';
+export { Toggle } from './Toggle';

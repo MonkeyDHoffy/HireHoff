@@ -1,0 +1,183 @@
+/**
+ * German translations — ApplyHoff
+ */
+import type { Translations } from './en';
+
+export const de: Translations = {
+  // --- Navigation / Menu ---
+  nav: {
+    dashboard: 'Dashboard',
+    newApplication: 'Neue Bewerbung',
+    settings: 'Einstellungen',
+    back: '← Zurück',
+    menu: 'Menü',
+    close: 'Schließen',
+    openMenu: 'Menü öffnen',
+  },
+
+  // --- Dashboard ---
+  dashboard: {
+    overview: 'Übersicht',
+    recentApplications: 'Letzte Bewerbungen',
+    total: 'Gesamt',
+    pending: 'Ausstehend',
+    interviews: 'Interviews',
+    viewAll: 'Alle anzeigen',
+    addApplication: '+ Bewerbung hinzufügen',
+    noApplicationsTitle: 'Noch keine Bewerbungen',
+    noApplicationsDescription:
+      'Beginne deine Bewerbungen zu tracken, indem du die erste hinzufügst.',
+    remote: 'Remote',
+    appliedDate: 'Beworben am {date}',
+  },
+
+  // --- Detail Screen ---
+  detail: {
+    notFoundTitle: 'Nicht gefunden',
+    notFoundMessage: 'Bewerbung nicht gefunden.',
+    deleteTitle: 'Bewerbung löschen',
+    deleteMessage: 'Bewerbung bei {company} löschen?',
+    deleteCancel: 'Abbrechen',
+    deleteConfirm: 'Löschen',
+    deleteButton: 'Bewerbung löschen',
+    details: 'Details',
+    company: 'Unternehmen',
+    position: 'Position',
+    location: 'Standort',
+    remote: 'Remote',
+    source: 'Quelle',
+    salary: 'Gehalt',
+    contact: 'Kontakt',
+    url: 'URL',
+    emptyValue: '—',
+    notes: 'Notizen',
+    changeStatus: 'Status ändern',
+    status: 'Status',
+    timeline: 'Verlauf',
+    noHistory: 'Noch kein Verlauf.',
+    appliedDate: 'Beworben am {date}',
+  },
+
+  // --- New Application Form ---
+  form: {
+    title: 'Neue Bewerbung',
+    save: 'Speichern',
+    saveApplication: 'Bewerbung speichern',
+    sectionCompany: 'Unternehmen & Position',
+    companyLabel: 'Unternehmen *',
+    companyPlaceholder: 'z.B. Acme Corp',
+    positionLabel: 'Position *',
+    positionPlaceholder: 'z.B. Frontend Developer',
+    locationLabel: 'Standort',
+    locationPlaceholder: 'z.B. Berlin, Deutschland',
+    remoteLabel: 'Remote',
+    sectionDetails: 'Details',
+    sourceLabel: 'Quelle',
+    statusLabel: 'Status',
+    urlLabel: 'Stellenanzeige URL',
+    urlPlaceholder: 'https://...',
+    salaryLabel: 'Gehalt',
+    salaryPlaceholder: 'z.B. 60k-70k EUR',
+    contactLabel: 'Ansprechpartner',
+    contactPlaceholder: 'z.B. Jane Doe, HR',
+    sectionNotes: 'Notizen',
+    notesLabel: 'Notizen',
+    notesPlaceholder: 'Interviewfragen, Eindrücke, Benefits...',
+    validationCompany: 'Unternehmensname ist erforderlich',
+    validationPosition: 'Position ist erforderlich',
+    validationTitle: 'Fehlende Angabe',
+  },
+
+  // --- Settings ---
+  settings: {
+    title: 'Einstellungen',
+    appInfo: 'App-Info',
+    version: 'ApplyHoff v1.0.0',
+    description: 'Bewerbungstracker gebaut mit Expo + React Native',
+    language: 'Sprache',
+    languageLabel: 'Sprache',
+    componentPreview: 'Komponentenvorschau',
+    buttons: 'Buttons',
+    primaryButton: 'Primärer Button',
+    secondary: 'Sekundär',
+    outline: 'Outline',
+    ghost: 'Ghost',
+    disabled: 'Deaktiviert',
+    loading: 'Laden...',
+    buttonSizes: 'Button-Größen',
+    small: 'Klein',
+    medium: 'Mittel',
+    large: 'Groß',
+    badges: 'Badges',
+    badgeDefault: 'Standard',
+    badgePrimary: 'Primär',
+    badgeSuccess: 'Erfolg',
+    badgeWarning: 'Warnung',
+    badgeError: 'Fehler',
+    statusPills: 'Status-Pills',
+    statusApplied: 'Beworben',
+    statusInterview: 'Interview',
+    statusRejected: 'Abgelehnt',
+    surfaces: 'Oberflächen',
+    defaultSurface: 'Standard-Oberfläche',
+    altSurface: 'Alternative Oberfläche',
+    inputFields: 'Eingabefelder',
+    companyLabel: 'Unternehmen',
+    companyPlaceholder: 'z.B. Acme Corp',
+    positionLabel: 'Position',
+    positionPlaceholder: 'z.B. Frontend Developer',
+    notesLabel: 'Notizen',
+    notesPlaceholder: 'Weitere Notizen...',
+    withError: 'Mit Fehler',
+    requiredField: 'Pflichtfeld',
+    fieldRequired: 'Dieses Feld ist erforderlich',
+    emptyState: 'Leerer Zustand',
+    emptyStateTitle: 'Noch keine Bewerbungen',
+    emptyStateDescription:
+      'Beginne deine Bewerbungen zu tracken, indem du die erste hinzufügst.',
+    addApplication: 'Bewerbung hinzufügen',
+    typographyPreview: 'Typografie-Vorschau',
+    heading1: 'Überschrift 1',
+    heading2: 'Überschrift 2',
+    heading3: 'Überschrift 3',
+    bodyText: 'Fließtext — normal',
+    bodySmall: 'Fließtext klein — sekundär',
+    caption: 'Beschriftung — leicht',
+    labelText: 'Label — mittlere Stärke',
+    colorPalette: 'Farbpalette',
+  },
+
+  // --- Status Labels ---
+  status: {
+    draft: 'Entwurf',
+    applied: 'Beworben',
+    acknowledged: 'Bestätigt',
+    interview_1: 'Interview 1',
+    interview_2: 'Interview 2',
+    assignment: 'Aufgabe',
+    offer: 'Angebot',
+    rejected: 'Abgelehnt',
+    withdrawn: 'Zurückgezogen',
+  },
+
+  // --- Source Labels ---
+  source: {
+    linkedin: 'LinkedIn',
+    indeed: 'Indeed',
+    company_website: 'Unternehmenswebsite',
+    referral: 'Empfehlung',
+    recruiter: 'Recruiter',
+    job_board: 'Jobbörse',
+    other: 'Sonstiges',
+  },
+
+  // --- Store ---
+  store: {
+    applicationCreated: 'Bewerbung erstellt',
+  },
+
+  // --- Footer ---
+  footer: {
+    brand: 'ApplyHoff',
+  },
+};
