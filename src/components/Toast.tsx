@@ -1,27 +1,21 @@
-/**
- * ApplyHoff — Toast Component
- *
- * Animated notification banner displayed at the top of the screen.
- * Controlled by the global toast store.
- */
-
 import React, { useEffect, useRef } from 'react';
 import { Animated, Text, Pressable, StyleSheet } from 'react-native';
-import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
 import { useToast, ToastVariant } from '../store/toast';
-
-const VARIANT_COLORS: Record<ToastVariant, { bg: string; text: string }> = {
-  success: { bg: '#2E7D32', text: '#FFFFFF' },
-  error: { bg: '#C62828', text: '#FFFFFF' },
-  info: { bg: colors.primary, text: '#FFFFFF' },
-};
+import { useTheme } from '../store/theme';
 
 export const Toast: React.FC = () => {
   const { visible, message, variant, hide } = useToast();
+  const c = useTheme((s) => s.colors);
   const translateY = useRef(new Animated.Value(-100)).current;
+
+  const variantColors: Record<ToastVariant, { bg: string; text: string }> = {
+    success: { bg: c.success, text: '#FFFFFF' },
+    error: { bg: c.error, text: '#FFFFFF' },
+    info: { bg: c.primary, text: '#FFFFFF' },
+  };
 
   useEffect(() => {
     Animated.spring(translateY, {
@@ -31,7 +25,7 @@ export const Toast: React.FC = () => {
     }).start();
   }, [visible, translateY]);
 
-  const variantStyle = VARIANT_COLORS[variant];
+  const variantStyle = variantColors[variant];
 
   return (
     <Animated.View

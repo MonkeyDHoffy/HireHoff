@@ -8,10 +8,11 @@ import {
   StyleSheet,
   ViewStyle,
 } from 'react-native';
-import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
+import { shadows } from '../theme/shadows';
+import { useTheme } from '../store/theme';
 
 // --- Types ---
 
@@ -21,17 +22,11 @@ export interface SelectOption {
 }
 
 interface SelectProps {
-  /** Label displayed above the select */
   label?: string;
-  /** Currently selected value */
   value: string;
-  /** List of options */
   options: SelectOption[];
-  /** Change handler */
   onChange: (value: string) => void;
-  /** Placeholder when nothing is selected */
   placeholder?: string;
-  /** Additional container styles */
   style?: ViewStyle;
 }
 
@@ -46,28 +41,31 @@ export const Select: React.FC<SelectProps> = ({
   style,
 }) => {
   const [open, setOpen] = useState(false);
+  const c = useTheme((s) => s.colors);
   const selectedOption = options.find((o) => o.value === value);
 
   return (
     <View style={[styles.container, style]}>
-      {label && <Text style={styles.label}>{label}</Text>}
+      {label && <Text style={[styles.label, { color: c.text }]}>{label}</Text>}
 
       <Pressable
         onPress={() => setOpen(true)}
         style={({ pressed }) => [
           styles.trigger,
-          pressed && styles.triggerPressed,
+          { backgroundColor: c.surface, borderColor: c.border },
+          pressed && { borderColor: c.borderFocused },
         ]}
       >
         <Text
           style={[
             styles.triggerText,
-            !selectedOption && styles.placeholder,
+            { color: c.text },
+            !selectedOption && { color: c.textLight },
           ]}
         >
           {selectedOption?.label ?? placeholder}
         </Text>
-        <Text style={styles.chevron}>▾</Text>
+        <Text style={[styles.chevron, { color: c.textSecondary }]}>▾</Text>
       </Pressable>
 
       <Modal
@@ -76,8 +74,8 @@ export const Select: React.FC<SelectProps> = ({
         animationType="fade"
         onRequestClose={() => setOpen(false)}
       >
-        <Pressable style={styles.overlay} onPress={() => setOpen(false)}>
-          <View style={styles.dropdown}>
+        <Pressable style={[styles.overlay, { backgroundColor: c.overlay }]} onPress={() => setOpen(false)}>
+          <View style={[styles.dropdown, { backgroundColor: c.surface }, shadows.lg]}>
             <FlatList
               data={options}
               keyExtractor={(item) => item.value}
@@ -89,14 +87,15 @@ export const Select: React.FC<SelectProps> = ({
                   }}
                   style={({ pressed }) => [
                     styles.option,
-                    item.value === value && styles.optionSelected,
-                    pressed && styles.optionPressed,
+                    item.value === value && { backgroundColor: c.surfaceAlt },
+                    pressed && { backgroundColor: c.surfaceAlt },
                   ]}
                 >
                   <Text
                     style={[
                       styles.optionText,
-                      item.value === value && styles.optionTextSelected,
+                      { color: c.text },
+                      item.value === value && { color: c.primary, fontWeight: '600' },
                     ]}
                   >
                     {item.label}
@@ -119,45 +118,32 @@ const styles = StyleSheet.create({
   },
   label: {
     ...typography.label,
-    color: colors.text,
     marginBottom: spacing.xs,
   },
   trigger: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.white,
     borderWidth: 1.5,
-    borderColor: colors.border,
     borderRadius: radii.md,
     paddingVertical: spacing.sm + 2,
     paddingHorizontal: spacing.md,
   },
-  triggerPressed: {
-    borderColor: colors.borderFocused,
-  },
   triggerText: {
     ...typography.body,
-    color: colors.text,
     flex: 1,
-  },
-  placeholder: {
-    color: colors.textLight,
   },
   chevron: {
     ...typography.body,
-    color: colors.textSecondary,
     marginLeft: spacing.sm,
   },
   overlay: {
     flex: 1,
-    backgroundColor: colors.overlay,
     justifyContent: 'center',
     alignItems: 'center',
     padding: spacing.xl,
   },
   dropdown: {
-    backgroundColor: colors.white,
     borderRadius: radii.lg,
     width: '100%',
     maxHeight: 360,
@@ -167,18 +153,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.sm + 2,
     paddingHorizontal: spacing.md,
   },
-  optionSelected: {
-    backgroundColor: colors.surfaceAlt,
-  },
-  optionPressed: {
-    backgroundColor: colors.surface,
-  },
   optionText: {
     ...typography.body,
-    color: colors.text,
-  },
-  optionTextSelected: {
-    color: colors.primary,
-    fontWeight: '600',
   },
 });

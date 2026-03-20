@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { useTheme } from '../store/theme';
@@ -9,15 +8,10 @@ import { useTheme } from '../store/theme';
 // --- Types ---
 
 interface HeaderProps {
-  /** Screen title */
   title: string;
-  /** Optional subtitle */
   subtitle?: string;
-  /** Element rendered on the left (e.g. back button) */
   left?: React.ReactNode;
-  /** Element rendered on the right (e.g. action icon) */
   right?: React.ReactNode;
-  /** Additional container styles */
   style?: ViewStyle;
 }
 
@@ -34,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
   const c = useTheme((s) => s.colors);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + spacing.sm, backgroundColor: c.background, borderBottomColor: c.border }, style]}>
+    <View style={[styles.container, { paddingTop: insets.top + spacing.sm, backgroundColor: c.background }, style]}>
       <View style={styles.row}>
         <View style={styles.side}>{left}</View>
         <View style={styles.center}>
@@ -57,11 +51,8 @@ export const Header: React.FC<HeaderProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.background,
     paddingBottom: spacing.sm,
     paddingHorizontal: spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   row: {
     flexDirection: 'row',
@@ -82,11 +73,9 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.heading3,
-    color: colors.text,
   },
   subtitle: {
     ...typography.caption,
-    color: colors.textSecondary,
     marginTop: 2,
   },
 });

@@ -1,19 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
+import { useTheme } from '../store/theme';
 
 // --- Types ---
 
 interface EmptyStateProps {
-  /** Main message */
   title: string;
-  /** Optional descriptive text */
   description?: string;
-  /** Optional action element (e.g. a Button) */
   action?: React.ReactNode;
-  /** Additional container styles */
   style?: ViewStyle;
 }
 
@@ -24,13 +20,17 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
   description,
   action,
   style,
-}) => (
-  <View style={[styles.container, style]}>
-    <Text style={styles.title}>{title}</Text>
-    {description && <Text style={styles.description}>{description}</Text>}
-    {action && <View style={styles.action}>{action}</View>}
-  </View>
-);
+}) => {
+  const c = useTheme((s) => s.colors);
+
+  return (
+    <View style={[styles.container, style]}>
+      <Text style={[styles.title, { color: c.textSecondary }]}>{title}</Text>
+      {description && <Text style={[styles.description, { color: c.textLight }]}>{description}</Text>}
+      {action && <View style={styles.action}>{action}</View>}
+    </View>
+  );
+};
 
 // --- Styles ---
 
@@ -43,13 +43,11 @@ const styles = StyleSheet.create({
   },
   title: {
     ...typography.heading3,
-    color: colors.textSecondary,
     textAlign: 'center',
     marginBottom: spacing.sm,
   },
   description: {
     ...typography.body,
-    color: colors.textLight,
     textAlign: 'center',
   },
   action: {

@@ -1,21 +1,17 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { radii } from '../theme/radii';
+import { useTheme } from '../store/theme';
 
 // --- Types ---
 
 type SurfaceVariant = 'default' | 'alt' | 'transparent';
 
 interface SurfaceProps {
-  /** Content */
   children: React.ReactNode;
-  /** Background variant */
   variant?: SurfaceVariant;
-  /** Additional container styles */
   style?: ViewStyle;
-  /** Remove default padding */
   noPadding?: boolean;
 }
 
@@ -26,18 +22,28 @@ export const Surface: React.FC<SurfaceProps> = ({
   variant = 'default',
   style,
   noPadding = false,
-}) => (
-  <View
-    style={[
-      styles.base,
-      variantStyles[variant],
-      noPadding && styles.noPadding,
-      style,
-    ]}
-  >
-    {children}
-  </View>
-);
+}) => {
+  const c = useTheme((s) => s.colors);
+
+  const bgMap: Record<SurfaceVariant, string> = {
+    default: c.surface,
+    alt: c.surfaceAlt,
+    transparent: c.transparent,
+  };
+
+  return (
+    <View
+      style={[
+        styles.base,
+        { backgroundColor: bgMap[variant] },
+        noPadding && styles.noPadding,
+        style,
+      ]}
+    >
+      {children}
+    </View>
+  );
+};
 
 // --- Styles ---
 
@@ -50,9 +56,3 @@ const styles = StyleSheet.create({
     padding: 0,
   },
 });
-
-const variantStyles: Record<SurfaceVariant, ViewStyle> = {
-  default: { backgroundColor: colors.surface },
-  alt: { backgroundColor: colors.surfaceAlt },
-  transparent: { backgroundColor: colors.transparent },
-};

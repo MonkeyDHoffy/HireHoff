@@ -9,37 +9,34 @@ import {
   Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
 import { shadows } from '../theme/shadows';
 import { useI18n } from '../i18n';
+import { useTheme } from '../store/theme';
 
 // --- Types ---
 
 interface MenuItem {
-  /** Display label */
   label: string;
-  /** Route to navigate to */
   route: string;
-  /** Optional icon element */
   icon?: React.ReactNode;
 }
 
 interface BurgerMenuProps {
-  /** Menu items to display */
   items: MenuItem[];
 }
 
 // --- Burger Icon (3 horizontal lines) ---
 
 function BurgerIcon() {
+  const c = useTheme((s) => s.colors);
   return (
     <View style={iconStyles.container}>
-      <View style={iconStyles.line} />
-      <View style={iconStyles.line} />
-      <View style={iconStyles.line} />
+      <View style={[iconStyles.line, { backgroundColor: c.text }]} />
+      <View style={[iconStyles.line, { backgroundColor: c.text }]} />
+      <View style={[iconStyles.line, { backgroundColor: c.text }]} />
     </View>
   );
 }
@@ -53,7 +50,6 @@ const iconStyles = StyleSheet.create({
   line: {
     width: 22,
     height: 2.5,
-    backgroundColor: colors.text,
     borderRadius: 2,
   },
 });
@@ -64,6 +60,7 @@ export const BurgerMenu: React.FC<BurgerMenuProps> = ({ items }) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const t = useI18n((s) => s.t);
+  const c = useTheme((s) => s.colors);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(-250)).current;
 
@@ -101,7 +98,6 @@ export const BurgerMenu: React.FC<BurgerMenuProps> = ({ items }) => {
 
   const handleNavigate = (route: string) => {
     close();
-    // Small delay so the menu closes before navigating
     setTimeout(() => {
       router.push(route as never);
     }, 180);
@@ -125,36 +121,35 @@ export const BurgerMenu: React.FC<BurgerMenuProps> = ({ items }) => {
         animationType="none"
         onRequestClose={close}
       >
-        {/* Overlay */}
         <Pressable style={styles.overlay} onPress={close}>
-          <Animated.View style={[styles.overlayBg, { opacity: fadeAnim }]} />
+          <Animated.View style={[styles.overlayBg, { opacity: fadeAnim, backgroundColor: c.overlay }]} />
         </Pressable>
 
-        {/* Drawer panel */}
         <Animated.View
           style={[
             styles.drawer,
-            { transform: [{ translateX: slideAnim }] },
+            { backgroundColor: c.background, transform: [{ translateX: slideAnim }] },
+            shadows.lg,
           ]}
         >
-          <Text style={styles.drawerTitle}>{t.nav.menu}</Text>
+          <Text style={[styles.drawerTitle, { color: c.text }]}>{t.nav.menu}</Text>
 
           {items.map((item) => (
             <Pressable
               key={item.route}
               style={({ pressed }) => [
                 styles.menuItem,
-                pressed && styles.menuItemPressed,
+                pressed && { backgroundColor: c.surfaceAlt },
               ]}
               onPress={() => handleNavigate(item.route)}
             >
               {item.icon && <View style={styles.menuIcon}>{item.icon}</View>}
-              <Text style={styles.menuLabel}>{item.label}</Text>
+              <Text style={[styles.menuLabel, { color: c.text }]}>{item.label}</Text>
             </Pressable>
           ))}
 
           <Pressable style={styles.closeBtn} onPress={close}>
-            <Text style={styles.closeBtnText}>{t.nav.close}</Text>
+            <Text style={[styles.closeBtnText, { color: c.textSecondary }]}>{t.nav.close}</Text>
           </Pressable>
         </Animated.View>
       </Modal>
@@ -175,7 +170,6 @@ const styles = StyleSheet.create({
   },
   overlayBg: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: colors.overlay,
   },
   drawer: {
     position: 'absolute',
@@ -183,16 +177,11 @@ const styles = StyleSheet.create({
     left: 0,
     width: 280,
     height: screenHeight,
-    backgroundColor: colors.background,
     paddingTop: spacing.xxl + spacing.lg,
     paddingHorizontal: spacing.lg,
-    borderRightWidth: 1,
-    borderRightColor: colors.border,
-    ...shadows.lg,
   },
   drawerTitle: {
     ...typography.heading2,
-    color: colors.text,
     marginBottom: spacing.lg,
   },
   menuItem: {
@@ -203,15 +192,11 @@ const styles = StyleSheet.create({
     borderRadius: radii.md,
     marginBottom: spacing.xs,
   },
-  menuItemPressed: {
-    backgroundColor: colors.surfaceAlt,
-  },
   menuIcon: {
     marginRight: spacing.md,
   },
   menuLabel: {
     ...typography.body,
-    color: colors.text,
     fontWeight: '500',
   },
   closeBtn: {
@@ -222,6 +207,5 @@ const styles = StyleSheet.create({
   },
   closeBtnText: {
     ...typography.label,
-    color: colors.textSecondary,
   },
 });

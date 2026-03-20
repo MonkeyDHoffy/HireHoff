@@ -1,20 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { colors } from '../theme/colors';
+import { View, Text, StyleSheet, ViewStyle } from 'react-native';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
+import { useTheme } from '../store/theme';
 
 // --- Types ---
 
 type BadgeVariant = 'default' | 'primary' | 'success' | 'warning' | 'error';
 
 interface BadgeProps {
-  /** Badge label */
   label: string;
-  /** Color variant */
   variant?: BadgeVariant;
-  /** Additional container styles */
   style?: ViewStyle;
 }
 
@@ -24,11 +21,31 @@ export const Badge: React.FC<BadgeProps> = ({
   label,
   variant = 'default',
   style,
-}) => (
-  <View style={[styles.base, variantStyles[variant], style]}>
-    <Text style={[styles.label, variantTextStyles[variant]]}>{label}</Text>
-  </View>
-);
+}) => {
+  const c = useTheme((s) => s.colors);
+
+  const bgMap: Record<BadgeVariant, string> = {
+    default: c.surfaceAlt,
+    primary: c.primaryLight + '30',
+    success: c.success + '20',
+    warning: c.warning + '20',
+    error: c.error + '20',
+  };
+
+  const textMap: Record<BadgeVariant, string> = {
+    default: c.textSecondary,
+    primary: c.primaryDark,
+    success: c.success,
+    warning: c.warning,
+    error: c.error,
+  };
+
+  return (
+    <View style={[styles.base, { backgroundColor: bgMap[variant] }, style]}>
+      <Text style={[styles.label, { color: textMap[variant] }]}>{label}</Text>
+    </View>
+  );
+};
 
 // --- Styles ---
 
@@ -44,19 +61,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
-const variantStyles: Record<BadgeVariant, ViewStyle> = {
-  default: { backgroundColor: colors.surfaceAlt },
-  primary: { backgroundColor: colors.primaryLight + '30' },
-  success: { backgroundColor: colors.success + '25' },
-  warning: { backgroundColor: colors.warning + '25' },
-  error: { backgroundColor: colors.error + '25' },
-};
-
-const variantTextStyles: Record<BadgeVariant, TextStyle> = {
-  default: { color: colors.textSecondary },
-  primary: { color: colors.primaryDark },
-  success: { color: '#3D6B42' },
-  warning: { color: '#8B6914' },
-  error: { color: '#8B2A2A' },
-};

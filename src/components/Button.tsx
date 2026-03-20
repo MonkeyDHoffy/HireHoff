@@ -7,11 +7,10 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
-import { colors } from '../theme/colors';
+import { useTheme } from '../store/theme';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
-import { shadows } from '../theme/shadows';
 
 // --- Types ---
 
@@ -19,21 +18,13 @@ type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps {
-  /** Button label */
   title: string;
-  /** Press handler */
   onPress: () => void;
-  /** Visual variant */
   variant?: ButtonVariant;
-  /** Size preset */
   size?: ButtonSize;
-  /** Disabled state */
   disabled?: boolean;
-  /** Loading state — shows spinner and disables interaction */
   loading?: boolean;
-  /** Optional icon element rendered before the title */
   icon?: React.ReactNode;
-  /** Additional container styles */
   style?: ViewStyle;
 }
 
@@ -49,7 +40,29 @@ export const Button: React.FC<ButtonProps> = ({
   icon,
   style,
 }) => {
+  const c = useTheme((s) => s.colors);
   const isDisabled = disabled || loading;
+
+  const variantStyles: Record<ButtonVariant, ViewStyle> = {
+    primary: { backgroundColor: c.primary },
+    secondary: { backgroundColor: c.surfaceAlt },
+    outline: { backgroundColor: c.transparent, borderWidth: 1.5, borderColor: c.primary },
+    ghost: { backgroundColor: c.transparent },
+  };
+
+  const pressedVariantStyles: Record<ButtonVariant, ViewStyle> = {
+    primary: { backgroundColor: c.primaryDark, transform: [{ scale: 0.97 }] },
+    secondary: { backgroundColor: c.border, transform: [{ scale: 0.97 }] },
+    outline: { backgroundColor: c.surfaceAlt, transform: [{ scale: 0.97 }] },
+    ghost: { backgroundColor: c.surfaceAlt, transform: [{ scale: 0.97 }] },
+  };
+
+  const variantTextStyles: Record<ButtonVariant, TextStyle> = {
+    primary: { color: c.textOnPrimary },
+    secondary: { color: c.text },
+    outline: { color: c.primary },
+    ghost: { color: c.primary },
+  };
 
   return (
     <Pressable
@@ -59,7 +72,7 @@ export const Button: React.FC<ButtonProps> = ({
         styles.base,
         sizeStyles[size],
         variantStyles[variant],
-        pressed && !isDisabled && pressedStyles[variant],
+        pressed && !isDisabled && pressedVariantStyles[variant],
         isDisabled && styles.disabled,
         style,
       ]}
@@ -69,7 +82,7 @@ export const Button: React.FC<ButtonProps> = ({
       {loading ? (
         <ActivityIndicator
           size="small"
-          color={variant === 'primary' ? colors.white : colors.primary}
+          color={variant === 'primary' ? c.white : c.primary}
         />
       ) : (
         <>
@@ -98,49 +111,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radii.md,
-    ...shadows.sm,
   },
   label: {
     ...typography.button,
   },
   disabled: {
-    opacity: 0.5,
+    opacity: 0.4,
   },
 });
 
 const sizeStyles: Record<ButtonSize, ViewStyle> = {
-  sm: { paddingVertical: spacing.xs, paddingHorizontal: spacing.md },
-  md: { paddingVertical: spacing.sm + 2, paddingHorizontal: spacing.lg },
-  lg: { paddingVertical: spacing.md, paddingHorizontal: spacing.xl },
+  sm: { paddingVertical: spacing.xs + 2, paddingHorizontal: spacing.md, borderRadius: radii.sm },
+  md: { paddingVertical: spacing.sm + 4, paddingHorizontal: spacing.lg },
+  lg: { paddingVertical: spacing.md, paddingHorizontal: spacing.xl, borderRadius: radii.lg },
 };
 
 const sizeTextStyles: Record<ButtonSize, TextStyle> = {
   sm: { fontSize: 13 },
   md: { fontSize: 16 },
   lg: { fontSize: 18 },
-};
-
-const variantStyles: Record<ButtonVariant, ViewStyle> = {
-  primary: { backgroundColor: colors.primary },
-  secondary: { backgroundColor: colors.surfaceAlt },
-  outline: {
-    backgroundColor: colors.transparent,
-    borderWidth: 1.5,
-    borderColor: colors.primary,
-  },
-  ghost: { backgroundColor: colors.transparent, ...shadows.none },
-};
-
-const variantTextStyles: Record<ButtonVariant, TextStyle> = {
-  primary: { color: colors.textOnPrimary },
-  secondary: { color: colors.text },
-  outline: { color: colors.primary },
-  ghost: { color: colors.primary },
-};
-
-const pressedStyles: Record<ButtonVariant, ViewStyle> = {
-  primary: { backgroundColor: colors.primaryDark },
-  secondary: { backgroundColor: colors.border },
-  outline: { backgroundColor: colors.surfaceAlt },
-  ghost: { backgroundColor: colors.surfaceAlt },
 };

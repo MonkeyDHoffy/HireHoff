@@ -1,18 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
+import { useTheme } from '../store/theme';
 
 // --- Types ---
 
 interface StatusPillProps {
-  /** Status label */
   label: string;
-  /** Dot color — pass a color token value */
   color?: string;
-  /** Additional container styles */
   style?: ViewStyle;
 }
 
@@ -20,14 +17,19 @@ interface StatusPillProps {
 
 export const StatusPill: React.FC<StatusPillProps> = ({
   label,
-  color = colors.primary,
+  color,
   style,
-}) => (
-  <View style={[styles.pill, style]}>
-    <View style={[styles.dot, { backgroundColor: color }]} />
-    <Text style={styles.label}>{label}</Text>
-  </View>
-);
+}) => {
+  const c = useTheme((s) => s.colors);
+  const dotColor = color ?? c.primary;
+
+  return (
+    <View style={[styles.pill, { backgroundColor: c.surfaceAlt }, style]}>
+      <View style={[styles.dot, { backgroundColor: dotColor }]} />
+      <Text style={[styles.label, { color: c.text }]}>{label}</Text>
+    </View>
+  );
+};
 
 // --- Styles ---
 
@@ -36,7 +38,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    backgroundColor: colors.surfaceAlt,
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.sm + 2,
     borderRadius: radii.full,
@@ -50,6 +51,5 @@ const styles = StyleSheet.create({
   label: {
     ...typography.caption,
     fontWeight: '600',
-    color: colors.text,
   },
 });
