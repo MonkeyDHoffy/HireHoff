@@ -1,11 +1,13 @@
 /**
  * ApplyHoff Shadow Tokens
  *
- * Subtle, warm shadows for elevation (cards, modals, etc.).
+ * Layered, warm shadows that create depth without heaviness.
  * Platform-aware: uses shadow* on iOS, elevation on Android, boxShadow on web.
  */
 
 import { Platform, ViewStyle } from 'react-native';
+
+const SHADOW_COLOR = '#2C1810';
 
 const createShadow = (
   offsetY: number,
@@ -15,7 +17,7 @@ const createShadow = (
 ): ViewStyle => ({
   ...Platform.select({
     ios: {
-      shadowColor: '#3D2C1E',
+      shadowColor: SHADOW_COLOR,
       shadowOffset: { width: 0, height: offsetY },
       shadowOpacity: opacity,
       shadowRadius: blurRadius,
@@ -25,16 +27,17 @@ const createShadow = (
     },
     web: {
       // @ts-expect-error — boxShadow is valid on web but not typed in ViewStyle
-      boxShadow: `0px ${offsetY}px ${blurRadius}px rgba(61, 44, 30, ${opacity})`,
+      boxShadow: `0px ${offsetY}px ${blurRadius}px rgba(44, 24, 16, ${opacity})`,
     },
   }),
 });
 
 export const shadows = {
   none: {} as ViewStyle,
-  sm: createShadow(1, 3, 0.08, 1),
-  md: createShadow(2, 6, 0.1, 3),
-  lg: createShadow(4, 12, 0.12, 6),
+  sm: createShadow(1, 2, 0.06, 1),
+  md: createShadow(2, 8, 0.08, 3),
+  lg: createShadow(4, 16, 0.1, 6),
+  xl: createShadow(8, 24, 0.12, 10),
 } as const;
 
 export type ShadowToken = keyof typeof shadows;

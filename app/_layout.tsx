@@ -3,6 +3,12 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { useFonts,
+  PlusJakartaSans_400Regular,
+  PlusJakartaSans_500Medium,
+  PlusJakartaSans_600SemiBold,
+  PlusJakartaSans_700Bold,
+} from '@expo-google-fonts/plus-jakarta-sans';
 import { colors } from '../src/theme/colors';
 import { initDatabase } from '../src/db';
 import { useApplicationStore } from '../src/store';
@@ -11,12 +17,18 @@ import { Toast } from '../src/components/Toast';
 
 /**
  * Root layout — wraps the entire app.
- * Initialises SQLite, hydrates stores, then renders the app.
+ * Loads fonts, initialises SQLite, hydrates stores, then renders.
  */
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
   const hydrateApps = useApplicationStore((s) => s.hydrate);
   const hydrateI18n = useI18n((s) => s.hydrate);
+  const [fontsLoaded] = useFonts({
+    PlusJakartaSans_400Regular,
+    PlusJakartaSans_500Medium,
+    PlusJakartaSans_600SemiBold,
+    PlusJakartaSans_700Bold,
+  });
 
   useEffect(() => {
     async function boot() {
@@ -27,7 +39,7 @@ export default function RootLayout() {
     boot();
   }, []);
 
-  if (!ready) {
+  if (!ready || !fontsLoaded) {
     return (
       <View style={styles.loading}>
         <ActivityIndicator size="large" color={colors.primary} />

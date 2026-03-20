@@ -1,37 +1,55 @@
 /**
  * ApplyHoff Typography Tokens
  *
- * Font sizes, weights, and line heights for consistent text rendering.
- * Uses system fonts — no custom font loading required for MVP.
+ * Plus Jakarta Sans — friendly, modern, distinctive.
+ * Perfect for productivity tools: approachable yet professional.
  */
 
 import { Platform, TextStyle } from 'react-native';
 
-const fontFamily = Platform.select({
-  web: 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',
-  default: undefined, // uses system default on native
+export const fontFamily = Platform.select({
+  web: '"Plus Jakarta Sans", system-ui, -apple-system, sans-serif',
+  default: 'PlusJakartaSans_400Regular',
+});
+
+const fontFamilyMedium = Platform.select({
+  web: '"Plus Jakarta Sans", system-ui, -apple-system, sans-serif',
+  default: 'PlusJakartaSans_500Medium',
+});
+
+const fontFamilySemiBold = Platform.select({
+  web: '"Plus Jakarta Sans", system-ui, -apple-system, sans-serif',
+  default: 'PlusJakartaSans_600SemiBold',
+});
+
+const fontFamilyBold = Platform.select({
+  web: '"Plus Jakarta Sans", system-ui, -apple-system, sans-serif',
+  default: 'PlusJakartaSans_700Bold',
 });
 
 export const typography = {
   heading1: {
-    fontFamily,
+    fontFamily: fontFamilyBold,
     fontSize: 28,
     fontWeight: '700',
-    lineHeight: 36,
+    lineHeight: 34,
+    letterSpacing: -0.5,
   } as TextStyle,
 
   heading2: {
-    fontFamily,
+    fontFamily: fontFamilySemiBold,
     fontSize: 22,
     fontWeight: '600',
     lineHeight: 28,
+    letterSpacing: -0.3,
   } as TextStyle,
 
   heading3: {
-    fontFamily,
+    fontFamily: fontFamilySemiBold,
     fontSize: 18,
     fontWeight: '600',
     lineHeight: 24,
+    letterSpacing: -0.2,
   } as TextStyle,
 
   body: {
@@ -53,20 +71,22 @@ export const typography = {
     fontSize: 12,
     fontWeight: '400',
     lineHeight: 16,
+    letterSpacing: 0.2,
   } as TextStyle,
 
   label: {
-    fontFamily,
+    fontFamily: fontFamilyMedium,
     fontSize: 14,
     fontWeight: '500',
     lineHeight: 20,
   } as TextStyle,
 
   button: {
-    fontFamily,
+    fontFamily: fontFamilySemiBold,
     fontSize: 16,
     fontWeight: '600',
     lineHeight: 20,
+    letterSpacing: 0.1,
   } as TextStyle,
 } as const;
 
