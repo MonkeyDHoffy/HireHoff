@@ -49,8 +49,8 @@ export const Input: React.FC<InputProps> = ({
         placeholderTextColor={c.textLight}
         style={[
           styles.input,
-          { color: c.text, backgroundColor: c.surface, borderColor: c.border },
-          focused && { borderColor: c.borderFocused },
+          { color: c.text, backgroundColor: c.surfaceAlt, borderColor: c.border },
+          focused && { borderColor: c.borderFocused, backgroundColor: c.surface },
           error && { borderColor: c.error },
         ]}
       />

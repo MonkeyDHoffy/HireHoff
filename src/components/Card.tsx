@@ -29,7 +29,7 @@ export const Card: React.FC<CardProps> = ({
     <View
       style={[
         styles.card,
-        { backgroundColor: c.surface },
+        { backgroundColor: c.surface, borderColor: c.border },
         shadows[elevation],
         noPadding && styles.noPadding,
         accentColor ? { borderLeftWidth: 3, borderLeftColor: accentColor } : undefined,
@@ -47,6 +47,7 @@ const styles = StyleSheet.create({
   card: {
     borderRadius: radii.lg,
     padding: spacing.md,
+    borderWidth: 1,
   },
   noPadding: {
     padding: 0,

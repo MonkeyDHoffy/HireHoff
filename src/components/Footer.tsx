@@ -22,11 +22,16 @@ export const Footer: React.FC<FooterProps> = ({ children, style }) => {
     <View
       style={[
         styles.container,
-        { paddingBottom: insets.bottom + spacing.sm, backgroundColor: c.background },
+        { paddingBottom: insets.bottom + spacing.sm, backgroundColor: c.surface, borderTopColor: c.border },
         style,
       ]}
     >
-      {children ?? <Text style={[styles.brand, { color: c.textLight }]}>ApplyHoff</Text>}
+      {children ?? (
+        <View style={styles.brandRow}>
+          <View style={[styles.brandDot, { backgroundColor: c.primary }]} />
+          <Text style={[styles.brand, { color: c.textSecondary }]}>ApplyHoff</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -38,8 +43,22 @@ const styles = StyleSheet.create({
     paddingTop: spacing.sm,
     paddingHorizontal: spacing.md,
     alignItems: 'center',
+    borderTopWidth: 1,
+  },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  brandDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   brand: {
     ...typography.caption,
+    fontWeight: '600',
+    letterSpacing: 1,
+    textTransform: 'uppercase',
   },
 });

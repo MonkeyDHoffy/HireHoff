@@ -1,8 +1,10 @@
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Alert } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
+import { radii } from '../src/theme/radii';
 import { Header } from '../src/components/Header';
 import { Card } from '../src/components/Card';
 import { SectionTitle } from '../src/components/SectionTitle';
@@ -83,22 +85,31 @@ export default function DashboardScreen() {
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
       >
-        {/* --- Quick Stats --- */}
-        <SectionTitle title={t.dashboard.overview} />
-        <View style={styles.statsRow}>
-          <Card style={styles.statCard}>
-            <Text style={[styles.statNumber, { color: c.primary }]}>{total}</Text>
-            <Text style={[styles.statLabel, { color: c.textSecondary }]}>{t.dashboard.total}</Text>
-          </Card>
-          <Card style={styles.statCard}>
-            <Text style={[styles.statNumber, { color: c.primary }]}>{pending}</Text>
-            <Text style={[styles.statLabel, { color: c.textSecondary }]}>{t.dashboard.pending}</Text>
-          </Card>
-          <Card style={styles.statCard}>
-            <Text style={[styles.statNumber, { color: c.primary }]}>{interviews}</Text>
-            <Text style={[styles.statLabel, { color: c.textSecondary }]}>{t.dashboard.interviews}</Text>
-          </Card>
-        </View>
+        {/* --- Welcome Hero --- */}
+        <LinearGradient
+          colors={[c.primary, c.primaryDark]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.hero}
+        >
+          <Text style={styles.heroGreeting}>{t.dashboard.overview}</Text>
+          <View style={styles.heroStatsRow}>
+            <View style={styles.heroStat}>
+              <Text style={styles.heroStatNumber}>{total}</Text>
+              <Text style={styles.heroStatLabel}>{t.dashboard.total}</Text>
+            </View>
+            <View style={[styles.heroStatDivider, { backgroundColor: 'rgba(255,255,255,0.3)' }]} />
+            <View style={styles.heroStat}>
+              <Text style={styles.heroStatNumber}>{pending}</Text>
+              <Text style={styles.heroStatLabel}>{t.dashboard.pending}</Text>
+            </View>
+            <View style={[styles.heroStatDivider, { backgroundColor: 'rgba(255,255,255,0.3)' }]} />
+            <View style={styles.heroStat}>
+              <Text style={styles.heroStatNumber}>{interviews}</Text>
+              <Text style={styles.heroStatLabel}>{t.dashboard.interviews}</Text>
+            </View>
+          </View>
+        </LinearGradient>
 
         {/* --- Upcoming Reminders --- */}
         {dueReminders.length > 0 && (
@@ -235,22 +246,40 @@ const styles = StyleSheet.create({
   content: {
     padding: spacing.md,
   },
-  statsRow: {
-    flexDirection: 'row',
-    gap: spacing.sm,
+  hero: {
+    borderRadius: radii.xl,
+    padding: spacing.lg,
     marginBottom: spacing.md,
   },
-  statCard: {
-    flex: 1,
+  heroGreeting: {
+    ...typography.heading2,
+    color: '#FFFFFF',
+    marginBottom: spacing.md,
+  },
+  heroStatsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    paddingVertical: spacing.md,
   },
-  statNumber: {
+  heroStat: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  heroStatNumber: {
     ...typography.heading1,
+    color: '#FFFFFF',
+    fontSize: 32,
   },
-  statLabel: {
+  heroStatLabel: {
     ...typography.caption,
-    marginTop: spacing.xs,
+    color: 'rgba(255,255,255,0.8)',
+    marginTop: spacing.xxs,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  heroStatDivider: {
+    width: 1,
+    height: 36,
   },
   appCard: {
     marginBottom: spacing.sm,

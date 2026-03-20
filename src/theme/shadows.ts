@@ -34,10 +34,10 @@ const createShadow = (
 
 export const shadows = {
   none: {} as ViewStyle,
-  sm: createShadow(1, 2, 0.06, 1),
-  md: createShadow(2, 8, 0.08, 3),
-  lg: createShadow(4, 16, 0.1, 6),
-  xl: createShadow(8, 24, 0.12, 10),
+  sm: createShadow(1, 4, 0.08, 2),
+  md: createShadow(3, 12, 0.12, 4),
+  lg: createShadow(6, 20, 0.14, 8),
+  xl: createShadow(10, 30, 0.16, 12),
 } as const;
 
 export type ShadowToken = keyof typeof shadows;

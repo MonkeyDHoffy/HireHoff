@@ -28,7 +28,7 @@ export const Header: React.FC<HeaderProps> = ({
   const c = useTheme((s) => s.colors);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + spacing.sm, backgroundColor: c.background }, style]}>
+    <View style={[styles.container, { paddingTop: insets.top + spacing.sm, backgroundColor: c.surface, borderBottomColor: c.border }, style]}>
       <View style={styles.row}>
         <View style={styles.side}>{left}</View>
         <View style={styles.center}>
@@ -36,7 +36,7 @@ export const Header: React.FC<HeaderProps> = ({
             {title}
           </Text>
           {subtitle && (
-            <Text style={[styles.subtitle, { color: c.textSecondary }]} numberOfLines={1}>
+            <Text style={[styles.subtitle, { color: c.primary }]} numberOfLines={1}>
               {subtitle}
             </Text>
           )}
@@ -53,6 +53,7 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: spacing.sm,
     paddingHorizontal: spacing.md,
+    borderBottomWidth: 1,
   },
   row: {
     flexDirection: 'row',

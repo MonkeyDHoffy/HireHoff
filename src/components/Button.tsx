@@ -11,6 +11,7 @@ import { useTheme } from '../store/theme';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { radii } from '../theme/radii';
+import { shadows } from '../theme/shadows';
 
 // --- Types ---
 
@@ -44,7 +45,7 @@ export const Button: React.FC<ButtonProps> = ({
   const isDisabled = disabled || loading;
 
   const variantStyles: Record<ButtonVariant, ViewStyle> = {
-    primary: { backgroundColor: c.primary },
+    primary: { backgroundColor: c.primary, ...shadows.md },
     secondary: { backgroundColor: c.surfaceAlt },
     outline: { backgroundColor: c.transparent, borderWidth: 1.5, borderColor: c.primary },
     ghost: { backgroundColor: c.transparent },

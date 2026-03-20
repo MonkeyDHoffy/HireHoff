@@ -24,7 +24,7 @@ export const StatusPill: React.FC<StatusPillProps> = ({
   const dotColor = color ?? c.primary;
 
   return (
-    <View style={[styles.pill, { backgroundColor: c.surfaceAlt }, style]}>
+    <View style={[styles.pill, { backgroundColor: dotColor + '18', borderColor: dotColor + '30' }, style]}>
       <View style={[styles.dot, { backgroundColor: dotColor }]} />
       <Text style={[styles.label, { color: c.text }]}>{label}</Text>
     </View>
@@ -41,6 +41,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
     paddingHorizontal: spacing.sm + 2,
     borderRadius: radii.full,
+    borderWidth: 1,
   },
   dot: {
     width: 8,
