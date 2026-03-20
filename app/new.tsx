@@ -9,7 +9,6 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
 import { Header } from '../src/components/Header';
@@ -119,12 +118,12 @@ export default function NewApplicationScreen() {
         title={t.form.title}
         left={
           <Pressable onPress={() => router.back()} hitSlop={8}>
-            <Text style={styles.backText}>{t.nav.back}</Text>
+            <Text style={[styles.backText, { color: c.primary }]}>{t.nav.back}</Text>
           </Pressable>
         }
         right={
           <Pressable onPress={handleSave} hitSlop={8}>
-            <Text style={styles.saveText}>{t.form.save}</Text>
+            <Text style={[styles.saveText, { color: c.primary }]}>{t.form.save}</Text>
           </Pressable>
         }
       />
@@ -279,7 +278,6 @@ export default function NewApplicationScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scroll: {
     flex: 1,
@@ -289,11 +287,9 @@ const styles = StyleSheet.create({
   },
   backText: {
     ...typography.label,
-    color: colors.primary,
   },
   saveText: {
     ...typography.label,
-    color: colors.primary,
     fontWeight: '700',
   },
   buttonRow: {

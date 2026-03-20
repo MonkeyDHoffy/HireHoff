@@ -9,7 +9,6 @@ import {
   Platform,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
 import { Header } from '../src/components/Header';
@@ -77,12 +76,12 @@ export default function DetailScreen() {
           title={t.detail.notFoundTitle}
           left={
             <Pressable onPress={() => router.back()} hitSlop={8}>
-              <Text style={styles.backText}>{t.nav.back}</Text>
+              <Text style={[styles.backText, { color: c.primary }]}>{t.nav.back}</Text>
             </Pressable>
           }
         />
         <View style={styles.center}>
-          <Text style={styles.notFound}>{t.detail.notFoundMessage}</Text>
+          <Text style={[styles.notFound, { color: c.textSecondary }]}>{t.detail.notFoundMessage}</Text>
         </View>
       </View>
     );
@@ -136,12 +135,12 @@ export default function DetailScreen() {
         subtitle={app.position}
         left={
           <Pressable onPress={() => router.back()} hitSlop={8}>
-            <Text style={styles.backText}>{t.nav.back}</Text>
+            <Text style={[styles.backText, { color: c.primary }]}>{t.nav.back}</Text>
           </Pressable>
         }
         right={
           <Pressable onPress={() => router.push(`/edit?id=${app.id}`)} hitSlop={8}>
-            <Text style={styles.editText}>{t.detail.edit}</Text>
+            <Text style={[styles.editText, { color: c.primary }]}>{t.detail.edit}</Text>
           </Pressable>
         }
       />
@@ -158,7 +157,7 @@ export default function DetailScreen() {
               label={t.status[app.status]}
               color={STATUS_COLORS[app.status]}
             />
-            <Text style={styles.dateText}>{t.detail.appliedDate.replace('{date}', appliedDate)}</Text>
+            <Text style={[styles.dateText, { color: c.textSecondary }]}>{t.detail.appliedDate.replace('{date}', appliedDate)}</Text>
           </View>
         </Card>
 
@@ -190,7 +189,7 @@ export default function DetailScreen() {
           <>
             <SectionTitle title={t.detail.notes} />
             <Card>
-              <Text style={styles.notesText}>{app.notes}</Text>
+              <Text style={[styles.notesText, { color: c.text }]}>{app.notes}</Text>
             </Card>
           </>
         ) : null}
@@ -211,7 +210,7 @@ export default function DetailScreen() {
         <SectionTitle title={t.reminder.title} />
         <Card>
           {appReminders.length === 0 ? (
-            <Text style={styles.emptyHistory}>{t.reminder.noReminders}</Text>
+            <Text style={[styles.emptyHistory, { color: c.textLight }]}>{t.reminder.noReminders}</Text>
           ) : (
             appReminders.map((rem) => {
               const dueDate = new Date(rem.dueAt);
@@ -219,23 +218,24 @@ export default function DetailScreen() {
               const isOverdue = !rem.done && dueDate < now;
               const isToday = !rem.done && dueDate.toDateString() === now.toDateString();
               return (
-                <View key={rem.id} style={styles.reminderItem}>
+                <View key={rem.id} style={[styles.reminderItem, { borderBottomColor: c.border }]}>
                   <Pressable onPress={async () => { await toggleReminder(rem.id); showToast(t.toast.reminderToggled); }} style={styles.reminderCheck}>
                     <Text style={{ fontSize: 18 }}>{rem.done ? '☑' : '☐'}</Text>
                   </Pressable>
                   <View style={styles.reminderContent}>
-                    <Text style={[styles.reminderMsg, rem.done && styles.reminderDone]}>{rem.message}</Text>
+                    <Text style={[styles.reminderMsg, { color: c.text }, rem.done && [styles.reminderDone, { color: c.textLight }]]}>{rem.message}</Text>
                     <Text style={[
                       styles.reminderDate,
-                      isOverdue && styles.reminderOverdue,
-                      isToday && styles.reminderToday,
+                      { color: c.textSecondary },
+                      isOverdue && [styles.reminderOverdue, { color: c.error }],
+                      isToday && [styles.reminderToday, { color: c.primary }],
                     ]}>
                       {isOverdue ? `${t.reminder.overdue}: ` : isToday ? `${t.reminder.dueToday}: ` : `${t.reminder.due}: `}
                       {dueDate.toLocaleDateString()}
                     </Text>
                   </View>
                   <Pressable onPress={async () => { await deleteReminder(rem.id); showToast(t.toast.reminderDeleted); }} hitSlop={8}>
-                    <Text style={styles.reminderDeleteIcon}>×</Text>
+                    <Text style={[styles.reminderDeleteIcon, { color: c.error }]}>×</Text>
                   </Pressable>
                 </View>
               );
@@ -256,7 +256,7 @@ export default function DetailScreen() {
                 keyboardType="numeric"
                 style={styles.reminderDaysInput}
               />
-              <Text style={styles.reminderDaysLabel}>{t.reminder.dateLabel}</Text>
+              <Text style={[styles.reminderDaysLabel, { color: c.textSecondary }]}>{t.reminder.dateLabel}</Text>
             </View>
             <Button
               title={t.reminder.addReminder}
@@ -295,27 +295,27 @@ export default function DetailScreen() {
         <SectionTitle title={t.detail.timeline} />
         <Card>
           {history.length === 0 ? (
-            <Text style={styles.emptyHistory}>{t.detail.noHistory}</Text>
+            <Text style={[styles.emptyHistory, { color: c.textLight }]}>{t.detail.noHistory}</Text>
           ) : (
             history.map((event, index) => (
               <View
                 key={event.id}
                 style={[
                   styles.historyItem,
-                  index < history.length - 1 && styles.historyItemBorder,
+                  index < history.length - 1 && [styles.historyItemBorder, { borderBottomColor: c.border }],
                 ]}
               >
-                <View style={styles.historyDot} />
+                <View style={[styles.historyDot, { backgroundColor: c.primary }]} />
                 <View style={styles.historyContent}>
-                  <Text style={styles.historyStatus}>
+                  <Text style={[styles.historyStatus, { color: c.text }]}>
                     {event.fromStatus
                       ? `${t.status[event.fromStatus]} → ${t.status[event.toStatus]}`
                       : t.status[event.toStatus]}
                   </Text>
                   {event.note ? (
-                    <Text style={styles.historyNote}>{event.note}</Text>
+                    <Text style={[styles.historyNote, { color: c.textSecondary }]}>{event.note}</Text>
                   ) : null}
-                  <Text style={styles.historyDate}>
+                  <Text style={[styles.historyDate, { color: c.textLight }]}>
                     {new Date(event.createdAt).toLocaleString()}
                   </Text>
                 </View>
@@ -383,7 +383,7 @@ export default function DetailScreen() {
             title={t.detail.deleteButton}
             variant="outline"
             onPress={handleDelete}
-            style={styles.deleteButton}
+            style={{ borderColor: c.error }}
           />
         </View>
 
@@ -398,10 +398,11 @@ export default function DetailScreen() {
 // --- Helper Component ---
 
 function DetailRow({ label, value }: { label: string; value: string }) {
+  const c = useTheme((s) => s.colors);
   return (
-    <View style={styles.detailRow}>
-      <Text style={styles.detailLabel}>{label}</Text>
-      <Text style={styles.detailValue} selectable>
+    <View style={[styles.detailRow, { borderBottomColor: c.border }]}>
+      <Text style={[styles.detailLabel, { color: c.textSecondary }]}>{label}</Text>
+      <Text style={[styles.detailValue, { color: c.text }]} selectable>
         {value}
       </Text>
     </View>
@@ -413,7 +414,6 @@ function DetailRow({ label, value }: { label: string; value: string }) {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scroll: {
     flex: 1,
@@ -428,15 +428,12 @@ const styles = StyleSheet.create({
   },
   notFound: {
     ...typography.body,
-    color: colors.textSecondary,
   },
   backText: {
     ...typography.label,
-    color: colors.primary,
   },
   editText: {
     ...typography.label,
-    color: colors.primary,
     fontWeight: '700',
   },
   statusCard: {
@@ -449,29 +446,24 @@ const styles = StyleSheet.create({
   },
   dateText: {
     ...typography.caption,
-    color: colors.textSecondary,
   },
   detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   detailLabel: {
     ...typography.label,
-    color: colors.textSecondary,
     flex: 1,
   },
   detailValue: {
     ...typography.body,
-    color: colors.text,
     flex: 2,
     textAlign: 'right',
   },
   notesText: {
     ...typography.body,
-    color: colors.text,
     lineHeight: 22,
   },
   tagsRow: {
@@ -482,7 +474,6 @@ const styles = StyleSheet.create({
   },
   emptyHistory: {
     ...typography.bodySmall,
-    color: colors.textLight,
     textAlign: 'center',
     paddingVertical: spacing.md,
   },
@@ -492,13 +483,11 @@ const styles = StyleSheet.create({
   },
   historyItemBorder: {
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   historyDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: colors.primary,
     marginTop: 5,
     marginRight: spacing.sm,
   },
@@ -507,16 +496,13 @@ const styles = StyleSheet.create({
   },
   historyStatus: {
     ...typography.label,
-    color: colors.text,
   },
   historyNote: {
     ...typography.bodySmall,
-    color: colors.textSecondary,
     marginTop: 2,
   },
   historyDate: {
     ...typography.caption,
-    color: colors.textLight,
     marginTop: 2,
   },
   deleteSection: {
@@ -533,15 +519,11 @@ const styles = StyleSheet.create({
   duplicateButton: {
     width: '100%',
   },
-  deleteButton: {
-    borderColor: colors.error,
-  },
   reminderItem: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   reminderCheck: {
     marginRight: spacing.sm,
@@ -551,28 +533,22 @@ const styles = StyleSheet.create({
   },
   reminderMsg: {
     ...typography.body,
-    color: colors.text,
   },
   reminderDone: {
     textDecorationLine: 'line-through',
-    color: colors.textLight,
   },
   reminderDate: {
     ...typography.caption,
-    color: colors.textSecondary,
     marginTop: 2,
   },
   reminderOverdue: {
-    color: colors.error,
     fontWeight: '700',
   },
   reminderToday: {
-    color: colors.primary,
     fontWeight: '700',
   },
   reminderDeleteIcon: {
     fontSize: 20,
-    color: colors.error,
     paddingHorizontal: spacing.sm,
   },
   addReminderRow: {
@@ -592,6 +568,5 @@ const styles = StyleSheet.create({
   },
   reminderDaysLabel: {
     ...typography.caption,
-    color: colors.textSecondary,
   },
 });

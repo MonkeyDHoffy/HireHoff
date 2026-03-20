@@ -9,20 +9,17 @@ import { useFonts,
   PlusJakartaSans_600SemiBold,
   PlusJakartaSans_700Bold,
 } from '@expo-google-fonts/plus-jakarta-sans';
-import { colors } from '../src/theme/colors';
 import { initDatabase } from '../src/db';
 import { useApplicationStore } from '../src/store';
 import { useI18n } from '../src/i18n';
 import { Toast } from '../src/components/Toast';
+import { useTheme } from '../src/store/theme';
 
-/**
- * Root layout — wraps the entire app.
- * Loads fonts, initialises SQLite, hydrates stores, then renders.
- */
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
   const hydrateApps = useApplicationStore((s) => s.hydrate);
   const hydrateI18n = useI18n((s) => s.hydrate);
+  const c = useTheme((s) => s.colors);
   const [fontsLoaded] = useFonts({
     PlusJakartaSans_400Regular,
     PlusJakartaSans_500Medium,
@@ -41,8 +38,8 @@ export default function RootLayout() {
 
   if (!ready || !fontsLoaded) {
     return (
-      <View style={styles.loading}>
-        <ActivityIndicator size="large" color={colors.primary} />
+      <View style={[styles.loading, { backgroundColor: c.background }]}>
+        <ActivityIndicator size="large" color={c.primary} />
       </View>
     );
   }
@@ -53,7 +50,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: colors.background },
+          contentStyle: { backgroundColor: c.background },
           animation: 'slide_from_right',
         }}
       />
@@ -67,6 +64,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.background,
   },
 });

@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
 import { Header } from '../src/components/Header';
@@ -81,7 +80,7 @@ export default function CalendarScreen() {
       <Header
         title={t.calendar.title}
         left={
-          <Text style={styles.backText} onPress={() => router.back()}>
+          <Text style={[styles.backText, { color: c.primary }]} onPress={() => router.back()}>
             {t.nav.back}
           </Text>
         }
@@ -95,11 +94,11 @@ export default function CalendarScreen() {
         {/* Month navigation */}
         <View style={styles.monthNav}>
           <Pressable onPress={goPrev} hitSlop={12}>
-            <Text style={styles.navArrow}>←</Text>
+            <Text style={[styles.navArrow, { color: c.primary }]}>←</Text>
           </Pressable>
           <Text style={[styles.monthLabel, { color: c.text }]}>{monthLabel}</Text>
           <Pressable onPress={goNext} hitSlop={12}>
-            <Text style={styles.navArrow}>→</Text>
+            <Text style={[styles.navArrow, { color: c.primary }]}>→</Text>
           </Pressable>
         </View>
 
@@ -126,7 +125,7 @@ export default function CalendarScreen() {
                 >
                   {day !== null && (
                     <>
-                      <Text style={[styles.dayNumber, { color: c.text }, isToday(day) && styles.todayNumber]}>
+                      <Text style={[styles.dayNumber, { color: c.text }, isToday(day) && [styles.todayNumber, { color: c.primary }]]}>
                         {day}
                       </Text>
                       {apps?.map((app) => (
@@ -195,13 +194,11 @@ export default function CalendarScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scroll: { flex: 1 },
   content: { padding: spacing.md },
   backText: {
     ...typography.label,
-    color: colors.primary,
   },
   monthNav: {
     flexDirection: 'row',
@@ -211,11 +208,9 @@ const styles = StyleSheet.create({
   },
   navArrow: {
     ...typography.heading2,
-    color: colors.primary,
   },
   monthLabel: {
     ...typography.heading3,
-    color: colors.text,
   },
   weekRow: {
     flexDirection: 'row',
@@ -224,14 +219,12 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     ...typography.caption,
-    color: colors.textSecondary,
     paddingBottom: spacing.xs,
   },
   dayCell: {
     flex: 1,
     minHeight: 44,
     borderWidth: 0.5,
-    borderColor: colors.border,
     padding: 2,
     alignItems: 'center',
   },
@@ -240,12 +233,10 @@ const styles = StyleSheet.create({
   },
   dayNumber: {
     ...typography.caption,
-    color: colors.text,
     marginBottom: 2,
   },
   todayNumber: {
     fontWeight: '700',
-    color: colors.primary,
   },
   dot: {
     width: 6,
@@ -258,7 +249,6 @@ const styles = StyleSheet.create({
   },
   daySectionTitle: {
     ...typography.label,
-    color: colors.textSecondary,
     marginBottom: spacing.xs,
   },
   appCard: {
@@ -266,16 +256,13 @@ const styles = StyleSheet.create({
   },
   appCompany: {
     ...typography.label,
-    color: colors.text,
   },
   appPosition: {
     ...typography.bodySmall,
-    color: colors.textSecondary,
     marginBottom: spacing.xs,
   },
   emptyText: {
     ...typography.body,
-    color: colors.textLight,
     textAlign: 'center',
     paddingVertical: spacing.md,
   },

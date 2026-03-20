@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
-import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
 import { Header } from '../src/components/Header';
@@ -111,7 +110,7 @@ export default function StatisticsScreen() {
       <Header
         title={t.statistics.title}
         left={
-          <Text style={styles.backText} onPress={() => router.back()}>
+          <Text style={[styles.backText, { color: c.primary }]} onPress={() => router.back()}>
             {t.nav.back}
           </Text>
         }
@@ -124,7 +123,7 @@ export default function StatisticsScreen() {
       >
         {total === 0 ? (
           <Card>
-            <Text style={styles.noData}>{t.statistics.noData}</Text>
+            <Text style={[styles.noData, { color: c.textSecondary }]}>{t.statistics.noData}</Text>
           </Card>
         ) : (
           <>
@@ -132,16 +131,16 @@ export default function StatisticsScreen() {
             <SectionTitle title={t.dashboard.overview} />
             <View style={styles.overviewRow}>
               <Card style={styles.overviewCard}>
-                <Text style={styles.bigNumber}>{total}</Text>
-                <Text style={styles.overviewLabel}>{t.statistics.total}</Text>
+                <Text style={[styles.bigNumber, { color: c.primary }]}>{total}</Text>
+                <Text style={[styles.overviewLabel, { color: c.textSecondary }]}>{t.statistics.total}</Text>
               </Card>
               <Card style={styles.overviewCard}>
-                <Text style={styles.bigNumber}>{active}</Text>
-                <Text style={styles.overviewLabel}>{t.statistics.active}</Text>
+                <Text style={[styles.bigNumber, { color: c.primary }]}>{active}</Text>
+                <Text style={[styles.overviewLabel, { color: c.textSecondary }]}>{t.statistics.active}</Text>
               </Card>
               <Card style={styles.overviewCard}>
-                <Text style={styles.bigNumber}>{successPct}%</Text>
-                <Text style={styles.overviewLabel}>{t.statistics.successRate}</Text>
+                <Text style={[styles.bigNumber, { color: c.primary }]}>{successPct}%</Text>
+                <Text style={[styles.overviewLabel, { color: c.textSecondary }]}>{t.statistics.successRate}</Text>
               </Card>
             </View>
 
@@ -151,10 +150,10 @@ export default function StatisticsScreen() {
                 <SectionTitle title={t.statistics.responseTime} />
                 <Card>
                   <View style={styles.responseRow}>
-                    <Text style={styles.bigNumber}>{avgResponseDays}</Text>
-                    <Text style={styles.responseUnit}>{t.statistics.days}</Text>
+                    <Text style={[styles.bigNumber, { color: c.primary }]}>{avgResponseDays}</Text>
+                    <Text style={[styles.responseUnit, { color: c.textSecondary }]}>{t.statistics.days}</Text>
                   </View>
-                  <Text style={styles.responseCaption}>
+                  <Text style={[styles.responseCaption, { color: c.textLight }]}>
                     {t.statistics.avgResponseTime}
                   </Text>
                 </Card>
@@ -169,10 +168,10 @@ export default function StatisticsScreen() {
                 const pct = (count / maxCount) * 100;
                 return (
                   <View key={status} style={styles.barRow}>
-                    <Text style={styles.barLabel} numberOfLines={1}>
+                    <Text style={[styles.barLabel, { color: c.text }]} numberOfLines={1}>
                       {t.status[status]}
                     </Text>
-                    <View style={styles.barTrack}>
+                    <View style={[styles.barTrack, { backgroundColor: c.border }]}>
                       <View
                         style={[
                           styles.barFill,
@@ -183,7 +182,7 @@ export default function StatisticsScreen() {
                         ]}
                       />
                     </View>
-                    <Text style={styles.barCount}>{count}</Text>
+                    <Text style={[styles.barCount, { color: c.text }]}>{count}</Text>
                   </View>
                 );
               })}
@@ -198,19 +197,19 @@ export default function StatisticsScreen() {
                     const pct = (count / maxMonthly) * 100;
                     return (
                       <View key={month} style={styles.barRow}>
-                        <Text style={styles.barLabel}>{month}</Text>
-                        <View style={styles.barTrack}>
+                        <Text style={[styles.barLabel, { color: c.text }]}>{month}</Text>
+                        <View style={[styles.barTrack, { backgroundColor: c.border }]}>
                           <View
                             style={[
                               styles.barFill,
                               {
                                 width: `${pct}%`,
-                                backgroundColor: colors.primary,
+                                backgroundColor: c.primary,
                               },
                             ]}
                           />
                         </View>
-                        <Text style={styles.barCount}>{count}</Text>
+                        <Text style={[styles.barCount, { color: c.text }]}>{count}</Text>
                       </View>
                     );
                   })}
@@ -224,11 +223,11 @@ export default function StatisticsScreen() {
                 <SectionTitle title={t.statistics.topSources} />
                 <Card>
                   {sourceCounts.map(([src, count]) => (
-                    <View key={src} style={styles.sourceRow}>
-                      <Text style={styles.sourceLabel}>
+                    <View key={src} style={[styles.sourceRow, { borderBottomColor: c.border }]}>
+                      <Text style={[styles.sourceLabel, { color: c.text }]}>
                         {(t.source as Record<string, string>)[src] ?? src}
                       </Text>
-                      <Text style={styles.sourceCount}>{count}</Text>
+                      <Text style={[styles.sourceCount, { color: c.primary }]}>{count}</Text>
                     </View>
                   ))}
                 </Card>
@@ -248,7 +247,6 @@ export default function StatisticsScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scroll: {
     flex: 1,
@@ -258,11 +256,9 @@ const styles = StyleSheet.create({
   },
   backText: {
     ...typography.label,
-    color: colors.primary,
   },
   noData: {
     ...typography.body,
-    color: colors.textSecondary,
     textAlign: 'center',
     paddingVertical: spacing.xl,
   },
@@ -277,12 +273,10 @@ const styles = StyleSheet.create({
   },
   bigNumber: {
     ...typography.heading1,
-    color: colors.primary,
     fontSize: 28,
   },
   overviewLabel: {
     ...typography.caption,
-    color: colors.textSecondary,
     marginTop: 2,
   },
   responseRow: {
@@ -292,11 +286,9 @@ const styles = StyleSheet.create({
   },
   responseUnit: {
     ...typography.body,
-    color: colors.textSecondary,
   },
   responseCaption: {
     ...typography.caption,
-    color: colors.textLight,
     marginTop: 2,
   },
   barRow: {
@@ -306,13 +298,11 @@ const styles = StyleSheet.create({
   },
   barLabel: {
     ...typography.caption,
-    color: colors.text,
     width: 90,
   },
   barTrack: {
     flex: 1,
     height: 14,
-    backgroundColor: colors.border,
     borderRadius: 7,
     overflow: 'hidden',
     marginHorizontal: spacing.sm,
@@ -323,7 +313,6 @@ const styles = StyleSheet.create({
   },
   barCount: {
     ...typography.label,
-    color: colors.text,
     width: 28,
     textAlign: 'right',
   },
@@ -332,14 +321,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: spacing.xs,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   sourceLabel: {
     ...typography.body,
-    color: colors.text,
   },
   sourceCount: {
     ...typography.label,
-    color: colors.primary,
   },
 });

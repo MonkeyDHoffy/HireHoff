@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
 import { Header } from '../src/components/Header';
@@ -36,7 +35,7 @@ export default function KanbanScreen() {
       <Header
         title={t.kanban.title}
         left={
-          <Text style={styles.backText} onPress={() => router.back()}>
+          <Text style={[styles.backText, { color: c.primary }]} onPress={() => router.back()}>
             {t.nav.back}
           </Text>
         }
@@ -49,10 +48,10 @@ export default function KanbanScreen() {
         showsHorizontalScrollIndicator={false}
       >
         {columns.map((col) => (
-          <View key={col.status} style={styles.column}>
+          <View key={col.status} style={[styles.column, { backgroundColor: c.surfaceAlt }]}>
             <View style={styles.columnHeader}>
               <StatusPill label={col.label} color={col.color} />
-              <Text style={styles.columnCount}>{col.apps.length}</Text>
+              <Text style={[styles.columnCount, { color: c.textSecondary }]}>{col.apps.length}</Text>
             </View>
 
             <ScrollView
@@ -60,7 +59,7 @@ export default function KanbanScreen() {
               showsVerticalScrollIndicator={false}
             >
               {col.apps.length === 0 ? (
-                <Text style={styles.emptyCol}>{t.kanban.emptyColumn}</Text>
+                <Text style={[styles.emptyCol, { color: c.textLight }]}>{t.kanban.emptyColumn}</Text>
               ) : (
                 col.apps.map((app) => (
                   <Pressable
@@ -68,14 +67,14 @@ export default function KanbanScreen() {
                     onPress={() => router.push(`/detail?id=${app.id}`)}
                   >
                     <Card style={styles.kanbanCard} accentColor={col.color}>
-                      <Text style={styles.cardCompany} numberOfLines={1}>
+                      <Text style={[styles.cardCompany, { color: c.text }]} numberOfLines={1}>
                         {app.company}
                       </Text>
-                      <Text style={styles.cardPosition} numberOfLines={1}>
+                      <Text style={[styles.cardPosition, { color: c.textSecondary }]} numberOfLines={1}>
                         {app.position}
                       </Text>
                       {app.location ? (
-                        <Text style={styles.cardMeta} numberOfLines={1}>
+                        <Text style={[styles.cardMeta, { color: c.textLight }]} numberOfLines={1}>
                           {app.location}
                         </Text>
                       ) : null}
@@ -98,11 +97,9 @@ const COLUMN_WIDTH = 220;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   backText: {
     ...typography.label,
-    color: colors.primary,
   },
   board: {
     flex: 1,
@@ -115,7 +112,6 @@ const styles = StyleSheet.create({
   column: {
     width: COLUMN_WIDTH,
     marginHorizontal: spacing.xs,
-    backgroundColor: colors.surfaceAlt,
     borderRadius: 12,
     padding: spacing.sm,
     maxHeight: '100%',
@@ -128,14 +124,12 @@ const styles = StyleSheet.create({
   },
   columnCount: {
     ...typography.label,
-    color: colors.textSecondary,
   },
   columnScroll: {
     flex: 1,
   },
   emptyCol: {
     ...typography.caption,
-    color: colors.textLight,
     textAlign: 'center',
     paddingVertical: spacing.md,
   },
@@ -144,16 +138,13 @@ const styles = StyleSheet.create({
   },
   cardCompany: {
     ...typography.label,
-    color: colors.text,
   },
   cardPosition: {
     ...typography.bodySmall,
-    color: colors.textSecondary,
     marginTop: 2,
   },
   cardMeta: {
     ...typography.caption,
-    color: colors.textLight,
     marginTop: 2,
   },
 });

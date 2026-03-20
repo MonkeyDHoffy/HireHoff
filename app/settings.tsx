@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
-import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
 import { Header } from '../src/components/Header';
@@ -49,7 +48,7 @@ export default function SettingsScreen() {
         title={t.settings.title}
         left={
           <Pressable onPress={() => router.back()} hitSlop={8}>
-            <Text style={styles.backText}>{t.nav.back}</Text>
+            <Text style={[styles.backText, { color: c.primary }]}>{t.nav.back}</Text>
           </Pressable>
         }
       />
@@ -62,8 +61,8 @@ export default function SettingsScreen() {
         {/* --- Settings Section --- */}
         <SectionTitle title={t.settings.appInfo} />
         <Card>
-          <Text style={styles.bodyText}>{t.settings.version}</Text>
-          <Text style={styles.captionText}>
+          <Text style={[styles.bodyText, { color: c.text }]}>{t.settings.version}</Text>
+          <Text style={[styles.captionText, { color: c.textSecondary }]}>
             {t.settings.description}
           </Text>
         </Card>
@@ -95,8 +94,8 @@ export default function SettingsScreen() {
         <Pressable onPress={() => router.push('/component-preview')}>
           <Card>
             <View style={styles.menuRow}>
-              <Text style={styles.menuLabel}>{t.settings.componentPreview}</Text>
-              <Text style={styles.menuArrow}>→</Text>
+              <Text style={[styles.menuLabel, { color: c.text }]}>{t.settings.componentPreview}</Text>
+              <Text style={[styles.menuArrow, { color: c.textLight }]}>→</Text>
             </View>
           </Card>
         </Pressable>
@@ -136,13 +135,13 @@ export default function SettingsScreen() {
         <SectionTitle title={t.template.title} />
         <Card>
           {templates.length === 0 ? (
-            <Text style={styles.captionText}>{t.template.noTemplates}</Text>
+            <Text style={[styles.captionText, { color: c.textSecondary }]}>{t.template.noTemplates}</Text>
           ) : (
             templates.map((tpl) => (
-              <View key={tpl.id} style={styles.templateRow}>
+              <View key={tpl.id} style={[styles.templateRow, { borderBottomColor: c.border }]}>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.bodyText}>{tpl.name}</Text>
-                  <Text style={styles.captionText}>
+                  <Text style={[styles.bodyText, { color: c.text }]}>{tpl.name}</Text>
+                  <Text style={[styles.captionText, { color: c.textSecondary }]}>
                     {[tpl.company, tpl.position].filter(Boolean).join(' — ') || '—'}
                   </Text>
                 </View>
@@ -171,7 +170,7 @@ export default function SettingsScreen() {
                     }
                   }}
                 >
-                  <Text style={styles.deleteIcon}>×</Text>
+                  <Text style={[styles.deleteIcon, { color: c.error }]}>×</Text>
                 </Pressable>
               </View>
             ))
@@ -191,7 +190,6 @@ export default function SettingsScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scroll: {
     flex: 1,
@@ -201,16 +199,13 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     ...typography.body,
-    color: colors.text,
   },
   captionText: {
     ...typography.caption,
-    color: colors.textSecondary,
     marginTop: spacing.xs,
   },
   backText: {
     ...typography.label,
-    color: colors.primary,
   },
   menuRow: {
     flexDirection: 'row',
@@ -219,22 +214,18 @@ const styles = StyleSheet.create({
   },
   menuLabel: {
     ...typography.body,
-    color: colors.text,
   },
   menuArrow: {
     ...typography.body,
-    color: colors.textLight,
   },
   templateRow: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   deleteIcon: {
     fontSize: 20,
-    color: colors.error,
     paddingHorizontal: spacing.sm,
   },
 });

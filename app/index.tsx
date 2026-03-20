@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
-import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
 import { Header } from '../src/components/Header';
@@ -74,7 +73,7 @@ export default function DashboardScreen() {
         left={<BurgerMenu items={menuItems} />}
         right={
           <Pressable onPress={() => router.push('/new')} hitSlop={8}>
-            <Text style={styles.addIcon}>+</Text>
+            <Text style={[styles.addIcon, { color: c.primary }]}>+</Text>
           </Pressable>
         }
       />
@@ -88,16 +87,16 @@ export default function DashboardScreen() {
         <SectionTitle title={t.dashboard.overview} />
         <View style={styles.statsRow}>
           <Card style={styles.statCard}>
-            <Text style={styles.statNumber}>{total}</Text>
-            <Text style={styles.statLabel}>{t.dashboard.total}</Text>
+            <Text style={[styles.statNumber, { color: c.primary }]}>{total}</Text>
+            <Text style={[styles.statLabel, { color: c.textSecondary }]}>{t.dashboard.total}</Text>
           </Card>
           <Card style={styles.statCard}>
-            <Text style={styles.statNumber}>{pending}</Text>
-            <Text style={styles.statLabel}>{t.dashboard.pending}</Text>
+            <Text style={[styles.statNumber, { color: c.primary }]}>{pending}</Text>
+            <Text style={[styles.statLabel, { color: c.textSecondary }]}>{t.dashboard.pending}</Text>
           </Card>
           <Card style={styles.statCard}>
-            <Text style={styles.statNumber}>{interviews}</Text>
-            <Text style={styles.statLabel}>{t.dashboard.interviews}</Text>
+            <Text style={[styles.statNumber, { color: c.primary }]}>{interviews}</Text>
+            <Text style={[styles.statLabel, { color: c.textSecondary }]}>{t.dashboard.interviews}</Text>
           </Card>
         </View>
 
@@ -114,12 +113,13 @@ export default function DashboardScreen() {
               return (
                 <Pressable key={rem.id} onPress={() => app && router.push(`/detail?id=${app.id}`)}>
                   <Card style={styles.reminderCard}>
-                    <Text style={styles.reminderCompany}>{app?.company ?? '—'}</Text>
-                    <Text style={styles.reminderMsg}>{rem.message}</Text>
+                    <Text style={[styles.reminderCompany, { color: c.text }]}>{app?.company ?? '—'}</Text>
+                    <Text style={[styles.reminderMsg, { color: c.textSecondary }]}>{rem.message}</Text>
                     <Text style={[
                       styles.reminderDue,
-                      isOverdue && styles.reminderOverdue,
-                      isToday && styles.reminderDueToday,
+                      { color: c.textSecondary },
+                      isOverdue && { color: c.error, fontWeight: '700' },
+                      isToday && { color: c.primary, fontWeight: '700' },
                     ]}>
                       {isOverdue ? t.reminder.overdue : isToday ? t.reminder.dueToday : t.reminder.due}: {dueDate.toLocaleDateString()}
                     </Text>
@@ -152,7 +152,7 @@ export default function DashboardScreen() {
               >
                 <Card style={styles.appCard} accentColor={STATUS_COLORS[app.status]}>
                   <View style={styles.appCardHeader}>
-                    <Text style={styles.appCompany} numberOfLines={1}>
+                    <Text style={[styles.appCompany, { color: c.text }]} numberOfLines={1}>
                       {app.company}
                     </Text>
                     <StatusPill
@@ -160,11 +160,11 @@ export default function DashboardScreen() {
                       color={STATUS_COLORS[app.status]}
                     />
                   </View>
-                  <Text style={styles.appPosition} numberOfLines={1}>
+                  <Text style={[styles.appPosition, { color: c.textSecondary }]} numberOfLines={1}>
                     {app.position}
                   </Text>
                   {app.location ? (
-                    <Text style={styles.appMeta}>
+                    <Text style={[styles.appMeta, { color: c.textLight }]}>
                       {app.location}
                       {app.remote ? ` · ${t.dashboard.remote}` : ''}
                     </Text>
@@ -228,7 +228,6 @@ export default function DashboardScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scroll: {
     flex: 1,
@@ -248,11 +247,9 @@ const styles = StyleSheet.create({
   },
   statNumber: {
     ...typography.heading1,
-    color: colors.primary,
   },
   statLabel: {
     ...typography.caption,
-    color: colors.textSecondary,
     marginTop: spacing.xs,
   },
   appCard: {
@@ -266,17 +263,14 @@ const styles = StyleSheet.create({
   },
   appCompany: {
     ...typography.heading3,
-    color: colors.text,
     flex: 1,
     marginRight: spacing.sm,
   },
   appPosition: {
     ...typography.body,
-    color: colors.textSecondary,
   },
   appMeta: {
     ...typography.caption,
-    color: colors.textLight,
     marginTop: spacing.xs,
   },
   statusSelect: {
@@ -292,7 +286,6 @@ const styles = StyleSheet.create({
   addIcon: {
     fontSize: 28,
     fontWeight: '600',
-    color: colors.primary,
     lineHeight: 32,
   },
   reminderCard: {
@@ -300,24 +293,13 @@ const styles = StyleSheet.create({
   },
   reminderCompany: {
     ...typography.label,
-    color: colors.text,
     marginBottom: 2,
   },
   reminderMsg: {
     ...typography.bodySmall,
-    color: colors.textSecondary,
   },
   reminderDue: {
     ...typography.caption,
-    color: colors.textSecondary,
     marginTop: 2,
-  },
-  reminderOverdue: {
-    color: colors.error,
-    fontWeight: '700',
-  },
-  reminderDueToday: {
-    color: colors.primary,
-    fontWeight: '700',
   },
 });

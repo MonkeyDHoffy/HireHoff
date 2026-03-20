@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { colors } from '../src/theme/colors';
 import { spacing } from '../src/theme/spacing';
 import { typography } from '../src/theme/typography';
 import { Header } from '../src/components/Header';
@@ -81,7 +80,7 @@ export default function ApplicationListScreen() {
         title={t.list.title}
         left={
           <Pressable onPress={() => router.back()} hitSlop={8}>
-            <Text style={styles.backText}>{t.nav.back}</Text>
+            <Text style={[styles.backText, { color: c.primary }]}>{t.nav.back}</Text>
           </Pressable>
         }
       />
@@ -108,13 +107,15 @@ export default function ApplicationListScreen() {
             onPress={() => setStatusFilter(opt.value)}
             style={[
               styles.filterChip,
-              statusFilter === opt.value && styles.filterChipActive,
+              { backgroundColor: c.surface, borderColor: c.border },
+              statusFilter === opt.value && { backgroundColor: c.primary, borderColor: c.primary },
             ]}
           >
             <Text
               style={[
                 styles.filterChipText,
-                statusFilter === opt.value && styles.filterChipTextActive,
+                { color: c.textSecondary },
+                statusFilter === opt.value && { color: '#FFFFFF' },
               ]}
             >
               {opt.label}
@@ -125,20 +126,22 @@ export default function ApplicationListScreen() {
 
       {/* --- Sort Chips --- */}
       <View style={styles.sortRow}>
-        <Text style={styles.sortLabel}>{t.list.sortBy}:</Text>
+        <Text style={[styles.sortLabel, { color: c.textSecondary }]}>{t.list.sortBy}:</Text>
         {(['date', 'status', 'company'] as const).map((option) => (
           <Pressable
             key={option}
             onPress={() => setSortBy(option)}
             style={[
               styles.sortChip,
-              sortBy === option && styles.sortChipActive,
+              { backgroundColor: c.surface, borderColor: c.border },
+              sortBy === option && { backgroundColor: c.accent, borderColor: c.accent },
             ]}
           >
             <Text
               style={[
                 styles.sortChipText,
-                sortBy === option && styles.sortChipTextActive,
+                { color: c.textSecondary },
+                sortBy === option && { color: '#FFFFFF' },
               ]}
             >
               {t.list[`sort${option.charAt(0).toUpperCase() + option.slice(1)}` as 'sortDate' | 'sortStatus' | 'sortCompany']}
@@ -147,7 +150,7 @@ export default function ApplicationListScreen() {
         ))}
       </View>
 
-      <Text style={styles.countText}>
+      <Text style={[styles.countText, { color: c.textLight }]}>
         {t.list.count.replace('{count}', String(filtered.length))}
       </Text>
 
@@ -169,7 +172,7 @@ export default function ApplicationListScreen() {
             >
               <Card style={styles.appCard} accentColor={STATUS_COLORS[app.status]}>
                 <View style={styles.appCardHeader}>
-                  <Text style={styles.appCompany} numberOfLines={1}>
+                  <Text style={[styles.appCompany, { color: c.text }]} numberOfLines={1}>
                     {app.company}
                   </Text>
                   <StatusPill
@@ -177,19 +180,19 @@ export default function ApplicationListScreen() {
                     color={STATUS_COLORS[app.status]}
                   />
                 </View>
-                <Text style={styles.appPosition} numberOfLines={1}>
+                <Text style={[styles.appPosition, { color: c.textSecondary }]} numberOfLines={1}>
                   {app.position}
                 </Text>
                 <View style={styles.appMeta}>
                   {app.location ? (
-                    <Text style={styles.appMetaText}>
+                    <Text style={[styles.appMetaText, { color: c.textLight }]}>
                       {app.location}
                       {app.remote ? ` · ${t.dashboard.remote}` : ''}
                     </Text>
                   ) : app.remote ? (
-                    <Text style={styles.appMetaText}>{t.dashboard.remote}</Text>
+                    <Text style={[styles.appMetaText, { color: c.textLight }]}>{t.dashboard.remote}</Text>
                   ) : null}
-                  <Text style={styles.appMetaText}>
+                  <Text style={[styles.appMetaText, { color: c.textLight }]}>
                     {new Date(app.appliedAt).toLocaleDateString()}
                   </Text>
                 </View>
@@ -211,7 +214,6 @@ export default function ApplicationListScreen() {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   scroll: {
     flex: 1,
@@ -235,20 +237,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.xs + 2,
     borderRadius: 20,
-    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.border,
-  },
-  filterChipActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
   },
   filterChipText: {
     ...typography.caption,
-    color: colors.textSecondary,
-  },
-  filterChipTextActive: {
-    color: '#FFFFFF',
   },
   sortRow: {
     flexDirection: 'row',
@@ -259,37 +251,24 @@ const styles = StyleSheet.create({
   },
   sortLabel: {
     ...typography.caption,
-    color: colors.textSecondary,
     marginRight: spacing.xs,
   },
   sortChip: {
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: 16,
-    backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.border,
-  },
-  sortChipActive: {
-    backgroundColor: colors.accent,
-    borderColor: colors.accent,
   },
   sortChipText: {
     ...typography.caption,
-    color: colors.textSecondary,
-  },
-  sortChipTextActive: {
-    color: '#FFFFFF',
   },
   countText: {
     ...typography.caption,
-    color: colors.textLight,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
   },
   backText: {
     ...typography.label,
-    color: colors.primary,
   },
   appCard: {
     marginBottom: spacing.sm,
@@ -302,13 +281,11 @@ const styles = StyleSheet.create({
   },
   appCompany: {
     ...typography.heading3,
-    color: colors.text,
     flex: 1,
     marginRight: spacing.sm,
   },
   appPosition: {
     ...typography.body,
-    color: colors.textSecondary,
   },
   appMeta: {
     flexDirection: 'row',
@@ -317,6 +294,5 @@ const styles = StyleSheet.create({
   },
   appMetaText: {
     ...typography.caption,
-    color: colors.textLight,
   },
 });
