@@ -33,6 +33,8 @@ export const en = {
     confirmStatusMessage: 'Change status to "{status}"?',
     confirmCancel: 'Cancel',
     confirmOk: 'Change',
+    streak: '{count} days in a row! 🔥',
+    streakLabel: 'Application Streak',
   },
 
   // --- Detail Screen ---

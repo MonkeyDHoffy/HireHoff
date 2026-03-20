@@ -35,6 +35,8 @@ export const de: Translations = {
     confirmStatusMessage: 'Status zu „{status}“ ändern?',
     confirmCancel: 'Abbrechen',
     confirmOk: 'Ändern',
+    streak: '{count} Tage in Folge! 🔥',
+    streakLabel: 'Bewerbungs-Streak',
   },
 
   // --- Detail Screen ---

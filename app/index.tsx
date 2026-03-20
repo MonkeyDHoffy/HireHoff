@@ -14,6 +14,7 @@ import { Footer } from '../src/components/Footer';
 import { BurgerMenu } from '../src/components/BurgerMenu';
 import { StatusPill } from '../src/components/StatusPill';
 import { Select } from '../src/components/Select';
+import { CountUp } from '../src/components/CountUp';
 import { useApplicationStore } from '../src/store';
 import { useTheme } from '../src/store/theme';
 import { STATUS_COLORS, APPLICATION_STATUSES, ApplicationStatus } from '../src/types';
@@ -64,6 +65,26 @@ export default function DashboardScreen() {
     (a) => ['interview_1', 'interview_2', 'assignment'].includes(a.status)
   ).length;
 
+  // Application streak — consecutive days with at least one application
+  const streak = useMemo(() => {
+    if (applications.length === 0) return 0;
+    const daySet = new Set(
+      applications.map((a) => new Date(a.createdAt).toDateString())
+    );
+    let count = 0;
+    const d = new Date();
+    // start from today and walk backwards
+    while (true) {
+      if (daySet.has(d.toDateString())) {
+        count++;
+        d.setDate(d.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    return count;
+  }, [applications]);
+
   // Latest 5 applications
   const recent = applications.slice(0, 5);
 
@@ -95,21 +116,34 @@ export default function DashboardScreen() {
           <Text style={styles.heroGreeting}>{t.dashboard.overview}</Text>
           <View style={styles.heroStatsRow}>
             <View style={styles.heroStat}>
-              <Text style={styles.heroStatNumber}>{total}</Text>
+              <CountUp value={total} style={styles.heroStatNumber} />
               <Text style={styles.heroStatLabel}>{t.dashboard.total}</Text>
             </View>
             <View style={[styles.heroStatDivider, { backgroundColor: 'rgba(255,255,255,0.3)' }]} />
             <View style={styles.heroStat}>
-              <Text style={styles.heroStatNumber}>{pending}</Text>
+              <CountUp value={pending} style={styles.heroStatNumber} />
               <Text style={styles.heroStatLabel}>{t.dashboard.pending}</Text>
             </View>
             <View style={[styles.heroStatDivider, { backgroundColor: 'rgba(255,255,255,0.3)' }]} />
             <View style={styles.heroStat}>
-              <Text style={styles.heroStatNumber}>{interviews}</Text>
+              <CountUp value={interviews} style={styles.heroStatNumber} />
               <Text style={styles.heroStatLabel}>{t.dashboard.interviews}</Text>
             </View>
           </View>
         </LinearGradient>
+
+        {/* --- Application Streak --- */}
+        {streak >= 2 && (
+          <View style={[styles.streakBanner, { backgroundColor: c.surface, borderColor: c.border }]}>
+            <Text style={styles.streakEmoji}>🔥</Text>
+            <View style={styles.streakTextWrap}>
+              <Text style={[styles.streakLabel, { color: c.textSecondary }]}>{t.dashboard.streakLabel}</Text>
+              <Text style={[styles.streakValue, { color: c.primary }]}>
+                {t.dashboard.streak.replace('{count}', String(streak))}
+              </Text>
+            </View>
+          </View>
+        )}
 
         {/* --- Upcoming Reminders --- */}
         {dueReminders.length > 0 && (
@@ -122,8 +156,7 @@ export default function DashboardScreen() {
               const isToday = dueDate.toDateString() === now.toDateString();
               const app = applications.find((a) => a.id === rem.applicationId);
               return (
-                <Pressable key={rem.id} onPress={() => app && router.push(`/detail?id=${app.id}`)}>
-                  <Card style={styles.reminderCard}>
+                <Card key={rem.id} style={styles.reminderCard} onPress={() => app && router.push(`/detail?id=${app.id}`)}>
                     <Text style={[styles.reminderCompany, { color: c.text }]}>{app?.company ?? '—'}</Text>
                     <Text style={[styles.reminderMsg, { color: c.textSecondary }]}>{rem.message}</Text>
                     <Text style={[
@@ -135,7 +168,6 @@ export default function DashboardScreen() {
                       {isOverdue ? t.reminder.overdue : isToday ? t.reminder.dueToday : t.reminder.due}: {dueDate.toLocaleDateString()}
                     </Text>
                   </Card>
-                </Pressable>
               );
             })}
           </>
@@ -157,11 +189,12 @@ export default function DashboardScreen() {
         ) : (
           <>
             {recent.map((app) => (
-              <Pressable
+              <Card
                 key={app.id}
+                style={styles.appCard}
+                accentColor={STATUS_COLORS[app.status]}
                 onPress={() => router.push(`/detail?id=${app.id}`)}
               >
-                <Card style={styles.appCard} accentColor={STATUS_COLORS[app.status]}>
                   <View style={styles.appCardHeader}>
                     <Text style={[styles.appCompany, { color: c.text }]} numberOfLines={1}>
                       {app.company}
@@ -203,7 +236,6 @@ export default function DashboardScreen() {
                     />
                   </View>
                 </Card>
-              </Pressable>
             ))}
 
             {total > 5 && (
@@ -250,6 +282,30 @@ const styles = StyleSheet.create({
     borderRadius: radii.xl,
     padding: spacing.lg,
     marginBottom: spacing.md,
+  },
+  streakBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    padding: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  streakEmoji: {
+    fontSize: 28,
+    marginRight: spacing.sm,
+  },
+  streakTextWrap: {
+    flex: 1,
+  },
+  streakLabel: {
+    ...typography.caption,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  streakValue: {
+    ...typography.heading3,
+    marginTop: 2,
   },
   heroGreeting: {
     ...typography.heading2,
