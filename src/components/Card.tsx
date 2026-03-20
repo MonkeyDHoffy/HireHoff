@@ -14,6 +14,8 @@ interface CardProps {
   noPadding?: boolean;
   accentColor?: string;
   onPress?: () => void;
+  onLongPress?: () => void;
+  glowColor?: string | null;
 }
 
 // --- Component ---
@@ -25,9 +27,24 @@ export const Card: React.FC<CardProps> = ({
   noPadding = false,
   accentColor,
   onPress,
+  onLongPress,
+  glowColor = null,
 }) => {
   const c = useTheme((s) => s.colors);
   const scale = useRef(new Animated.Value(1)).current;
+  const glowOpacity = useRef(new Animated.Value(glowColor ? 1 : 0)).current;
+
+  // Animate glow when glowColor changes
+  React.useEffect(() => {
+    if (glowColor) {
+      glowOpacity.setValue(1);
+      Animated.timing(glowOpacity, {
+        toValue: 0,
+        duration: 1200,
+        useNativeDriver: false,
+      }).start();
+    }
+  }, [glowColor, glowOpacity]);
 
   const handlePressIn = useCallback(() => {
     Animated.spring(scale, {
@@ -47,15 +64,23 @@ export const Card: React.FC<CardProps> = ({
     }).start();
   }, [scale]);
 
+  const glowBorderColor = glowColor
+    ? glowOpacity.interpolate({
+        inputRange: [0, 1],
+        outputRange: [c.border, glowColor],
+      })
+    : undefined;
+
   const cardContent = (
     <Animated.View
       style={[
         styles.card,
-        { backgroundColor: c.surface, borderColor: c.border },
+        { backgroundColor: c.surface, borderColor: glowBorderColor ?? c.border },
         shadows[elevation],
         noPadding && styles.noPadding,
         accentColor ? { borderLeftWidth: 3, borderLeftColor: accentColor } : undefined,
-        onPress ? { transform: [{ scale }] } : undefined,
+        (onPress || onLongPress) ? { transform: [{ scale }] } : undefined,
+        glowColor ? { borderWidth: 2 } : undefined,
         style,
       ]}
     >
@@ -63,12 +88,14 @@ export const Card: React.FC<CardProps> = ({
     </Animated.View>
   );
 
-  if (onPress) {
+  if (onPress || onLongPress) {
     return (
       <Pressable
         onPress={onPress}
+        onLongPress={onLongPress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
+        delayLongPress={500}
       >
         {cardContent}
       </Pressable>

@@ -37,6 +37,10 @@ export const de: Translations = {
     confirmOk: 'Ändern',
     streak: '{count} Tage in Folge! 🔥',
     streakLabel: 'Bewerbungs-Streak',
+    weeklyDigest: 'Letzte Woche: {applied} beworben · {interviews} Interviews',
+    weeklyDigestLabel: 'Wochenübersicht',
+    favorited: 'Favorisiert',
+    unfavorited: 'Entfernt',
   },
 
   // --- Detail Screen ---
@@ -251,6 +255,7 @@ export const de: Translations = {
     reminderAdded: 'Erinnerung gesetzt',
     reminderDeleted: 'Erinnerung entfernt',
     reminderToggled: 'Erinnerung aktualisiert',
+    undo: 'Rückgängig',
   },
 
   // --- Templates ---
@@ -273,6 +278,15 @@ export const de: Translations = {
   // --- Footer ---
   footer: {
     brand: 'ApplyHoff',
+  },
+
+  // --- Quick Actions ---
+  quickAction: {
+    title: 'Schnellaktionen',
+    edit: 'Bearbeiten',
+    duplicate: 'Duplizieren',
+    delete: 'Löschen',
+    toggleFavorite: 'Favorit umschalten',
   },
 
   // --- Application List ---

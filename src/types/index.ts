@@ -87,6 +87,7 @@ export interface Application {
   contact: string;
   notes: string;
   tags: string[];            // user-defined labels
+  favorited: boolean;       // pinned/starred
   appliedAt: string;       // ISO date string
   createdAt: string;       // ISO date string
   updatedAt: string;       // ISO date string
@@ -160,6 +161,7 @@ export function createEmptyApplication(): Omit<Application, 'id' | 'createdAt' |
     contact: '',
     notes: '',
     tags: [],
+    favorited: false,
     appliedAt: new Date().toISOString(),
   };
 }

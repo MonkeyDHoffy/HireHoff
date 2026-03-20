@@ -65,6 +65,7 @@ export default function NewApplicationScreen() {
         contact: templateApp.contact,
         notes: templateApp.notes,
         tags: templateApp.tags ?? [],
+        favorited: false,
         appliedAt: new Date().toISOString(),
       };
     }
@@ -161,6 +162,7 @@ export default function NewApplicationScreen() {
                     contact: tpl.contact,
                     notes: tpl.notes,
                     tags: tpl.tags ?? [],
+                    favorited: false,
                     appliedAt: new Date().toISOString(),
                   });
                 }}

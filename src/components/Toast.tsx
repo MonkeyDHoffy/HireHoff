@@ -7,7 +7,7 @@ import { useToast, ToastVariant } from '../store/toast';
 import { useTheme } from '../store/theme';
 
 export const Toast: React.FC = () => {
-  const { visible, message, variant, hide } = useToast();
+  const { visible, message, variant, hide, undoAction, undo } = useToast();
   const c = useTheme((s) => s.colors);
   const translateY = useRef(new Animated.Value(-100)).current;
 
@@ -39,6 +39,11 @@ export const Toast: React.FC = () => {
         <Text style={[styles.text, { color: variantStyle.text }]}>
           {message}
         </Text>
+        {undoAction && (
+          <Pressable onPress={undo} hitSlop={8}>
+            <Text style={styles.undoText}>Undo</Text>
+          </Pressable>
+        )}
       </Pressable>
     </Animated.View>
   );
@@ -58,10 +63,19 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: radii.md,
   },
   inner: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
   },
   text: {
     ...typography.label,
     textAlign: 'center',
+  },
+  undoText: {
+    ...typography.label,
+    color: '#FFFFFF',
+    textDecorationLine: 'underline',
+    fontWeight: '700',
   },
 });

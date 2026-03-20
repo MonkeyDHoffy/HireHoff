@@ -20,3 +20,5 @@ export { Select } from './Select';
 export { Toggle } from './Toggle';
 export { Toast } from './Toast';
 export { CountUp } from './CountUp';
+export { SwipeableCard } from './SwipeableCard';
+export { ScrollToTop } from './ScrollToTop';

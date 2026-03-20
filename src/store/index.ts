@@ -88,6 +88,9 @@ interface ApplicationStore {
   addTemplate: (name: string, data: Omit<ApplicationTemplate, 'id' | 'name' | 'createdAt'>) => Promise<void>;
   /** Delete a template */
   deleteTemplate: (id: string) => Promise<void>;
+
+  /** Toggle favorite/pinned state */
+  toggleFavorite: (id: string) => Promise<void>;
 }
 
 // --- Store ---
@@ -246,6 +249,19 @@ export const useApplicationStore = create<ApplicationStore>((set, get) => ({
     await deleteTemplateFromDb(id);
     set((state) => ({
       templates: state.templates.filter((t) => t.id !== id),
+    }));
+  },
+
+  toggleFavorite: async (id) => {
+    const app = get().applications.find((a) => a.id === id);
+    if (!app) return;
+    const favorited = !app.favorited;
+    const updatedAt = new Date().toISOString();
+    await updateApplicationInDb(id, { favorited, updatedAt } as Partial<Omit<Application, 'id' | 'createdAt'>>);
+    set((state) => ({
+      applications: state.applications.map((a) =>
+        a.id === id ? { ...a, favorited, updatedAt } : a
+      ),
     }));
   },
 }));

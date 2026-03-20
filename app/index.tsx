@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Alert } from 'react-native';
+import React, { useMemo, useRef, useState, useCallback } from 'react';
+import { View, Text, ScrollView, StyleSheet, Pressable, Platform, Alert, ActionSheetIOS } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { spacing } from '../src/theme/spacing';
@@ -15,6 +15,8 @@ import { BurgerMenu } from '../src/components/BurgerMenu';
 import { StatusPill } from '../src/components/StatusPill';
 import { Select } from '../src/components/Select';
 import { CountUp } from '../src/components/CountUp';
+import { SwipeableCard } from '../src/components/SwipeableCard';
+import { ScrollToTop } from '../src/components/ScrollToTop';
 import { useApplicationStore } from '../src/store';
 import { useTheme } from '../src/store/theme';
 import { STATUS_COLORS, APPLICATION_STATUSES, ApplicationStatus } from '../src/types';
@@ -29,10 +31,17 @@ export default function DashboardScreen() {
   const router = useRouter();
   const applications = useApplicationStore((s) => s.applications);
   const changeStatus = useApplicationStore((s) => s.changeStatus);
+  const deleteApplication = useApplicationStore((s) => s.deleteApplication);
+  const toggleFavorite = useApplicationStore((s) => s.toggleFavorite);
+  const addApplication = useApplicationStore((s) => s.addApplication);
   const allReminders = useApplicationStore((s) => s.reminders);
   const c = useTheme((s) => s.colors);
   const t = useI18n((s) => s.t);
   const showToast = useToast((s) => s.show);
+
+  const scrollRef = useRef<ScrollView>(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [glowCardId, setGlowCardId] = useState<string | null>(null);
 
   const dueReminders = useMemo(() => {
     const now = new Date();
@@ -85,8 +94,110 @@ export default function DashboardScreen() {
     return count;
   }, [applications]);
 
-  // Latest 5 applications
-  const recent = applications.slice(0, 5);
+  // Weekly digest — last week's stats
+  const weeklyDigest = useMemo(() => {
+    const now = new Date();
+    const weekAgo = new Date(now.getTime() - 7 * 86400000);
+    const lastWeekApps = applications.filter(
+      (a) => new Date(a.createdAt) >= weekAgo && new Date(a.createdAt) <= now
+    );
+    const applied = lastWeekApps.filter((a) =>
+      ['applied', 'acknowledged'].includes(a.status)
+    ).length;
+    const interviews = lastWeekApps.filter((a) =>
+      ['interview_1', 'interview_2', 'assignment'].includes(a.status)
+    ).length;
+    return { applied, interviews, total: lastWeekApps.length };
+  }, [applications]);
+
+  // Sort: favorites first, then by createdAt
+  const sortedApplications = useMemo(() => {
+    return [...applications].sort((a, b) => {
+      if (a.favorited && !b.favorited) return -1;
+      if (!a.favorited && b.favorited) return 1;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+  }, [applications]);
+
+  // Latest 5 applications (with favorites on top)
+  const recent = sortedApplications.slice(0, 5);
+
+  // Long-press quick actions handler
+  const handleLongPress = useCallback((appId: string) => {
+    const options = [
+      t.quickAction.edit,
+      t.quickAction.duplicate,
+      t.quickAction.toggleFavorite,
+      t.quickAction.delete,
+      t.dashboard.confirmCancel,
+    ];
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options, destructiveButtonIndex: 3, cancelButtonIndex: 4, title: t.quickAction.title },
+        (idx) => handleQuickAction(appId, idx)
+      );
+    } else if (Platform.OS === 'web') {
+      // Web: use simple prompt-style
+      const choice = window.prompt(
+        `${t.quickAction.title}\n1. ${options[0]}\n2. ${options[1]}\n3. ${options[2]}\n4. ${options[3]}`
+      );
+      if (choice) handleQuickAction(appId, parseInt(choice, 10) - 1);
+    } else {
+      Alert.alert(t.quickAction.title, undefined, [
+        { text: options[0], onPress: () => handleQuickAction(appId, 0) },
+        { text: options[1], onPress: () => handleQuickAction(appId, 1) },
+        { text: options[2], onPress: () => handleQuickAction(appId, 2) },
+        { text: options[3], style: 'destructive', onPress: () => handleQuickAction(appId, 3) },
+        { text: options[4], style: 'cancel' },
+      ]);
+    }
+  }, [t, applications]);
+
+  const handleQuickAction = useCallback(async (appId: string, actionIndex: number) => {
+    const app = applications.find((a) => a.id === appId);
+    if (!app) return;
+    switch (actionIndex) {
+      case 0: // Edit
+        router.push(`/edit?id=${appId}`);
+        break;
+      case 1: // Duplicate
+        router.push(`/new?duplicate=${appId}`);
+        break;
+      case 2: // Toggle Favorite
+        await toggleFavorite(appId);
+        showToast(app.favorited ? t.dashboard.unfavorited : t.dashboard.favorited);
+        break;
+      case 3: { // Delete with undo
+        const snapshot = { ...app };
+        await deleteApplication(appId);
+        showToast(t.toast.applicationDeleted, 'error', async () => {
+          const { id: _id, createdAt: _c, updatedAt: _u, ...rest } = snapshot;
+          await addApplication(rest);
+        });
+        break;
+      }
+    }
+  }, [applications, toggleFavorite, deleteApplication, addApplication, showToast, t, router]);
+
+  // Swipe handlers
+  const handleSwipeDelete = useCallback(async (appId: string) => {
+    const app = applications.find((a) => a.id === appId);
+    if (!app) return;
+    const snapshot = { ...app };
+    await deleteApplication(appId);
+    showToast(t.toast.applicationDeleted, 'error', async () => {
+      const { id: _id, createdAt: _c, updatedAt: _u, ...rest } = snapshot;
+      await addApplication(rest);
+    });
+  }, [applications, deleteApplication, addApplication, showToast, t]);
+
+  // Status change with glow animation
+  const handleStatusChange = useCallback(async (appId: string, newStatus: ApplicationStatus) => {
+    await changeStatus(appId, newStatus);
+    setGlowCardId(appId);
+    showToast(t.toast.statusChanged);
+    setTimeout(() => setGlowCardId(null), 1500);
+  }, [changeStatus, showToast, t]);
 
   return (
     <View style={[styles.screen, { backgroundColor: c.background }]}>
@@ -102,9 +213,12 @@ export default function DashboardScreen() {
       />
 
       <ScrollView
+        ref={scrollRef}
         style={styles.scroll}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        onScroll={(e) => setShowScrollTop(e.nativeEvent.contentOffset.y > 300)}
+        scrollEventThrottle={100}
       >
         {/* --- Welcome Hero --- */}
         <LinearGradient
@@ -140,6 +254,21 @@ export default function DashboardScreen() {
               <Text style={[styles.streakLabel, { color: c.textSecondary }]}>{t.dashboard.streakLabel}</Text>
               <Text style={[styles.streakValue, { color: c.primary }]}>
                 {t.dashboard.streak.replace('{count}', String(streak))}
+              </Text>
+            </View>
+          </View>
+        )}
+
+        {/* --- Weekly Digest --- */}
+        {weeklyDigest.total > 0 && (
+          <View style={[styles.weeklyDigest, { backgroundColor: c.surface, borderColor: c.border }]}>
+            <Text style={styles.weeklyEmoji}>📊</Text>
+            <View style={styles.streakTextWrap}>
+              <Text style={[styles.streakLabel, { color: c.textSecondary }]}>{t.dashboard.weeklyDigestLabel}</Text>
+              <Text style={[styles.weeklyText, { color: c.text }]}>
+                {t.dashboard.weeklyDigest
+                  .replace('{applied}', String(weeklyDigest.applied))
+                  .replace('{interviews}', String(weeklyDigest.interviews))}
               </Text>
             </View>
           </View>
@@ -189,16 +318,27 @@ export default function DashboardScreen() {
         ) : (
           <>
             {recent.map((app) => (
-              <Card
+              <SwipeableCard
                 key={app.id}
-                style={styles.appCard}
-                accentColor={STATUS_COLORS[app.status]}
-                onPress={() => router.push(`/detail?id=${app.id}`)}
+                onSwipeLeft={() => handleSwipeDelete(app.id)}
+                onSwipeRight={() => router.push(`/edit?id=${app.id}`)}
+                leftLabel="🗑️"
+                rightLabel="✏️"
               >
+                <Card
+                  style={styles.appCard}
+                  accentColor={STATUS_COLORS[app.status]}
+                  onPress={() => router.push(`/detail?id=${app.id}`)}
+                  onLongPress={() => handleLongPress(app.id)}
+                  glowColor={glowCardId === app.id ? STATUS_COLORS[app.status] : null}
+                >
                   <View style={styles.appCardHeader}>
-                    <Text style={[styles.appCompany, { color: c.text }]} numberOfLines={1}>
-                      {app.company}
-                    </Text>
+                    <View style={styles.appCardTitleRow}>
+                      {app.favorited && <Text style={styles.favStar}>⭐</Text>}
+                      <Text style={[styles.appCompany, { color: c.text }]} numberOfLines={1}>
+                        {app.company}
+                      </Text>
+                    </View>
                     <StatusPill
                       label={t.status[app.status]}
                       color={STATUS_COLORS[app.status]}
@@ -220,10 +360,7 @@ export default function DashboardScreen() {
                       onChange={(val) => {
                         const label = t.status[val as ApplicationStatus];
                         const msg = t.dashboard.confirmStatusMessage.replace('{status}', label);
-                        const doChange = async () => {
-                          await changeStatus(app.id, val as ApplicationStatus);
-                          showToast(t.toast.statusChanged);
-                        };
+                        const doChange = () => handleStatusChange(app.id, val as ApplicationStatus);
                         if (Platform.OS === 'web') {
                           if (window.confirm(msg)) doChange();
                         } else {
@@ -236,6 +373,7 @@ export default function DashboardScreen() {
                     />
                   </View>
                 </Card>
+              </SwipeableCard>
             ))}
 
             {total > 5 && (
@@ -260,6 +398,11 @@ export default function DashboardScreen() {
 
         <View style={{ height: spacing.xxl }} />
       </ScrollView>
+
+      <ScrollToTop
+        visible={showScrollTop}
+        onPress={() => scrollRef.current?.scrollTo({ y: 0, animated: true })}
+      />
 
       <Footer />
     </View>
@@ -307,6 +450,22 @@ const styles = StyleSheet.create({
     ...typography.heading3,
     marginTop: 2,
   },
+  weeklyDigest: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    padding: spacing.sm,
+    marginBottom: spacing.md,
+  },
+  weeklyEmoji: {
+    fontSize: 24,
+    marginRight: spacing.sm,
+  },
+  weeklyText: {
+    ...typography.bodySmall,
+    marginTop: 2,
+  },
   heroGreeting: {
     ...typography.heading2,
     color: '#FFFFFF',
@@ -346,10 +505,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing.xs,
   },
+  appCardTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    marginRight: spacing.sm,
+  },
+  favStar: {
+    fontSize: 14,
+    marginRight: 4,
+  },
   appCompany: {
     ...typography.heading3,
     flex: 1,
-    marginRight: spacing.sm,
   },
   appPosition: {
     ...typography.body,

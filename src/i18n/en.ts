@@ -35,6 +35,10 @@ export const en = {
     confirmOk: 'Change',
     streak: '{count} days in a row! 🔥',
     streakLabel: 'Application Streak',
+    weeklyDigest: 'Last week: {applied} applied · {interviews} interviews',
+    weeklyDigestLabel: 'Weekly Summary',
+    favorited: 'Favorited',
+    unfavorited: 'Unfavorited',
   },
 
   // --- Detail Screen ---
@@ -249,6 +253,7 @@ export const en = {
     reminderAdded: 'Reminder set',
     reminderDeleted: 'Reminder removed',
     reminderToggled: 'Reminder updated',
+    undo: 'Undo',
   },
 
   // --- Templates ---
@@ -271,6 +276,15 @@ export const en = {
   // --- Footer ---
   footer: {
     brand: 'ApplyHoff',
+  },
+
+  // --- Quick Actions ---
+  quickAction: {
+    title: 'Quick Actions',
+    edit: 'Edit',
+    duplicate: 'Duplicate',
+    delete: 'Delete',
+    toggleFavorite: 'Toggle Favorite',
   },
 
   // --- Application List ---

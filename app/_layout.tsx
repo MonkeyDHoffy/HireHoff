@@ -51,7 +51,8 @@ export default function RootLayout() {
         screenOptions={{
           headerShown: false,
           contentStyle: { backgroundColor: c.background },
-          animation: 'slide_from_right',
+          animation: 'fade_from_bottom',
+          animationDuration: 200,
         }}
       />
       <Toast />
