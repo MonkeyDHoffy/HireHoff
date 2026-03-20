@@ -56,6 +56,7 @@ export default function DetailScreen() {
     [allReminders, id]
   );
   const deleteApplication = useApplicationStore((s) => s.deleteApplication);
+  const toggleFavorite = useApplicationStore((s) => s.toggleFavorite);
   const addReminder = useApplicationStore((s) => s.addReminder);
   const toggleReminder = useApplicationStore((s) => s.toggleReminder);
   const deleteReminder = useApplicationStore((s) => s.deleteReminder);
@@ -153,6 +154,16 @@ export default function DetailScreen() {
         {/* --- Status --- */}
         <Card style={styles.statusCard}>
           <View style={styles.statusRow}>
+            <Pressable
+              onPress={() => {
+                toggleFavorite(app.id);
+                showToast(app.favorited ? t.dashboard.unfavorited : t.dashboard.favorited);
+              }}
+              hitSlop={8}
+              style={styles.favButton}
+            >
+              <Text style={styles.favStar}>{app.favorited ? '⭐' : '☆'}</Text>
+            </Pressable>
             <StatusPill
               label={t.status[app.status]}
               color={STATUS_COLORS[app.status]}
@@ -443,6 +454,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  favButton: {
+    padding: 4,
+    marginRight: spacing.xs,
+  },
+  favStar: {
+    fontSize: 20,
   },
   dateText: {
     ...typography.caption,

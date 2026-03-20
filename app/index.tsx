@@ -334,7 +334,16 @@ export default function DashboardScreen() {
                 >
                   <View style={styles.appCardHeader}>
                     <View style={styles.appCardTitleRow}>
-                      {app.favorited && <Text style={styles.favStar}>⭐</Text>}
+                      <Pressable
+                        onPress={() => {
+                          toggleFavorite(app.id);
+                          showToast(app.favorited ? t.dashboard.unfavorited : t.dashboard.favorited);
+                        }}
+                        hitSlop={8}
+                        style={styles.favButton}
+                      >
+                        <Text style={styles.favStar}>{app.favorited ? '⭐' : '☆'}</Text>
+                      </Pressable>
                       <Text style={[styles.appCompany, { color: c.text }]} numberOfLines={1}>
                         {app.company}
                       </Text>
@@ -511,8 +520,11 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: spacing.sm,
   },
+  favButton: {
+    padding: 4,
+  },
   favStar: {
-    fontSize: 14,
+    fontSize: 18,
     marginRight: 4,
   },
   appCompany: {

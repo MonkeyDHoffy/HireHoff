@@ -18,6 +18,7 @@ import {
 } from '../src/types';
 import { useI18n } from '../src/i18n';
 import { useTheme } from '../src/store/theme';
+import { useToast } from '../src/store/toast';
 
 /**
  * Application list — shows all applications with search and status filter.
@@ -25,8 +26,10 @@ import { useTheme } from '../src/store/theme';
 export default function ApplicationListScreen() {
   const router = useRouter();
   const applications = useApplicationStore((s) => s.applications);
+  const toggleFavorite = useApplicationStore((s) => s.toggleFavorite);
   const c = useTheme((s) => s.colors);
   const t = useI18n((s) => s.t);
+  const showToast = useToast((s) => s.show);
 
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<ApplicationStatus | 'all'>('all');
@@ -172,6 +175,17 @@ export default function ApplicationListScreen() {
             >
               <Card style={styles.appCard} accentColor={STATUS_COLORS[app.status]}>
                 <View style={styles.appCardHeader}>
+                  <Pressable
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(app.id);
+                      showToast(app.favorited ? t.dashboard.unfavorited : t.dashboard.favorited);
+                    }}
+                    hitSlop={8}
+                    style={styles.favButton}
+                  >
+                    <Text style={styles.favStar}>{app.favorited ? '⭐' : '☆'}</Text>
+                  </Pressable>
                   <Text style={[styles.appCompany, { color: c.text }]} numberOfLines={1}>
                     {app.company}
                   </Text>
@@ -278,6 +292,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: spacing.xs,
+  },
+  favButton: {
+    padding: 4,
+  },
+  favStar: {
+    fontSize: 18,
+    marginRight: 4,
   },
   appCompany: {
     ...typography.heading3,
